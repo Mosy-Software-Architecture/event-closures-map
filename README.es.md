@@ -60,6 +60,7 @@ Schema en [`schemas/`](schemas); los editores que entienden `$schema` los autoco
 | `updates.json` | no | Última hora. Mismo formato que el fichero publicado, así que se puede sustituir en vivo. |
 | `i18n.json` | no | Cambios a cualquier texto de la interfaz, por idioma (claves en [`src/strings.js`](src/strings.js)). |
 | `assets/` | no | El logo y la imagen para redes. |
+| `public/` | no | Se copia tal cual a la raíz del sitio (ficheros de verificación, imágenes para redes). Si un nombre choca, gana el fichero generado. |
 
 Convenciones comunes:
 

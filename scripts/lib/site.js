@@ -220,6 +220,12 @@ export function siteFiles(data, opts = {}) {
   files.set('robots.txt', () => robots(data));
   const sm = sitemap(data);
   if (sm) files.set('sitemap.xml', () => sm);
+  // <data>/public/ is copied as is to the site root (verification files, images for social posts...)
+  const extra = join(dir, 'public');
+  if (existsSync(extra)) {
+    const walk = (d, rel) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) walk(p, rel + f + '/'); else if (!files.has(rel + f)) files.set(rel + f, () => readFileSync(p)); } };
+    walk(extra, '');
+  }
   return files;
 }
 

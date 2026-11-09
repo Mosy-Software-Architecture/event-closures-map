@@ -58,6 +58,7 @@ JSON Schema in [`schemas/`](schemas); editors that understand `$schema` will aut
 | `updates.json` | no | Latest updates. Same contract as the published file, so it can be replaced live. |
 | `i18n.json` | no | Overrides of any interface text, per language (keys in [`src/strings.js`](src/strings.js)). |
 | `assets/` | no | Logo files and the social preview image. |
+| `public/` | no | Copied as is to the site root (verification files, images for social posts). Generated files win on a name clash. |
 
 Conventions that apply everywhere:
 
