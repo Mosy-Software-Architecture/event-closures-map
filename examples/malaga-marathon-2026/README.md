@@ -15,8 +15,9 @@ npm run build -- --data examples/malaga-marathon-2026        # the site as publi
   street far east (`bbox`), the street only used up to the turnaround (`bbox`), breakwaters without
   a `highway` tag (`anyTag`), a square and two terminal buildings (`as: "polygon"`).
 - Partial closures (service lanes, one direction) are drawn in full and explained in `note`.
-- `gpx/` holds the official 2026 marathon track and the 2025 half marathon track (the 2026 half
-  course was not published); `routes.json` was made from them with `gpx-to-routes`.
+- `routes.json` was made with `gpx-to-routes` from the organisers' 2026 marathon track and the
+  2025 half marathon track (the 2026 half course was not published). The GPX files are not
+  included: they are not ours to redistribute.
 - `public/` keeps the images used in the social posts, which the live site already served.
 - `updates.json` is the last-minute list as the watcher left it on race day; `watch/` holds its
   Spanish prompt and domain allowlist.
