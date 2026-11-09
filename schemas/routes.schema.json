@@ -1,0 +1,48 @@
+{
+  "$id": "routes.schema.json",
+  "title": "Routes",
+  "description": "The course of the event (not a closure) and markers such as start and finish.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "intro": { "$ref": "common.schema.json#/$defs/localized" },
+    "markersMinZoom": { "type": "number" },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "coordinates"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" },
+          "name": { "$ref": "common.schema.json#/$defs/localized" },
+          "legend": { "$ref": "common.schema.json#/$defs/localized" },
+          "color": { "$ref": "common.schema.json#/$defs/color" },
+          "style": { "enum": ["solid", "dashed", "dotted"] },
+          "marker": { "type": "string", "maxLength": 12, "description": "Emoji or short text repeated along the course" },
+          "markerEveryM": { "type": "number", "minimum": 100 },
+          "markerOffsetM": { "type": "number", "minimum": 0 },
+          "source": { "type": "object", "properties": { "label": { "$ref": "common.schema.json#/$defs/localized" }, "url": { "$ref": "common.schema.json#/$defs/httpsUrl" } }, "additionalProperties": false },
+          "coordinates": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/position" }, "minItems": 2 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "markers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["lat", "lon", "title"],
+        "properties": {
+          "route": { "type": "string" },
+          "lat": { "$ref": "common.schema.json#/$defs/lat" },
+          "lon": { "$ref": "common.schema.json#/$defs/lon" },
+          "icon": { "type": "string", "maxLength": 12 },
+          "title": { "$ref": "common.schema.json#/$defs/localized" },
+          "text": { "$ref": "common.schema.json#/$defs/localized" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

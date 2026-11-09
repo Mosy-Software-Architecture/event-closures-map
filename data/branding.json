@@ -1,0 +1,8 @@
+{
+  "$schema": "../schemas/branding.schema.json",
+  "name": "Your organisation",
+  "title": { "en": "My city run: road closures", "es": "Mi carrera popular: cortes de tráfico" },
+  "subtitle": { "en": "Move the time to see what is closed at that moment.", "es": "Mueve la hora para ver qué está cortado en ese momento." },
+  "colors": { "accent": "#1f6feb", "ink": "#1d2a33", "inkSoft": "#51606b" },
+  "credit": true
+}

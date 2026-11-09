@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/i18n.schema.json",
+  "es": {
+    "carParksTitle": "Aparcamientos municipales con acceso limitado",
+    "routeTitle": "Recorrido de la carrera"
+  },
+  "en": {
+    "carParksTitle": "Municipal car parks with restricted access",
+    "routeTitle": "Race course"
+  }
+}

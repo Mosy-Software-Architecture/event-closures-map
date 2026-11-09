@@ -1,0 +1,67 @@
+{
+  "$id": "branding.schema.json",
+  "title": "Branding",
+  "description": "Who publishes the map: logo, title, colours, call to action and legal entity.",
+  "type": "object",
+  "required": ["name", "title"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": { "type": "string" },
+    "legalName": { "type": "string" },
+    "url": { "$ref": "common.schema.json#/$defs/httpsUrl", "description": "Where the logo links to" },
+    "logo": {
+      "type": "object",
+      "properties": {
+        "src": { "type": "string", "pattern": "^(https://|assets/)[^\\s]+$" },
+        "srcDark": { "type": "string", "pattern": "^(https://|assets/)[^\\s]+$" },
+        "alt": { "type": "string" },
+        "height": { "type": "number", "minimum": 10, "maximum": 60 }
+      },
+      "additionalProperties": false
+    },
+    "favicon": {
+      "type": "object",
+      "properties": { "letter": { "type": "string", "maxLength": 2 }, "src": { "type": "string", "pattern": "^(https://|assets/)[^\\s]+$" } },
+      "additionalProperties": false
+    },
+    "title": { "$ref": "common.schema.json#/$defs/localized" },
+    "subtitle": { "$ref": "common.schema.json#/$defs/localized" },
+    "colors": {
+      "type": "object",
+      "properties": {
+        "accent": { "$ref": "common.schema.json#/$defs/color" },
+        "ink": { "$ref": "common.schema.json#/$defs/color" },
+        "inkSoft": { "$ref": "common.schema.json#/$defs/color" },
+        "dark": {
+          "type": "object",
+          "properties": { "accent": { "$ref": "common.schema.json#/$defs/color" }, "ink": { "$ref": "common.schema.json#/$defs/color" }, "inkSoft": { "$ref": "common.schema.json#/$defs/color" } },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "font": {
+      "type": "object",
+      "properties": { "family": { "type": "string", "pattern": "^[A-Za-z0-9 ]+$" }, "googleFonts": { "type": "string", "pattern": "^[A-Za-z0-9 :;@,.+]+$" } },
+      "additionalProperties": false
+    },
+    "cta": {
+      "type": "object",
+      "required": ["text", "button", "url"],
+      "properties": { "text": { "$ref": "common.schema.json#/$defs/localized" }, "button": { "$ref": "common.schema.json#/$defs/localized" }, "url": { "$ref": "common.schema.json#/$defs/httpsUrl" } },
+      "additionalProperties": false
+    },
+    "legal": {
+      "type": "object",
+      "properties": {
+        "paragraphs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/localized" } },
+        "links": { "type": "array", "items": { "type": "object", "required": ["label", "url"], "properties": { "label": { "$ref": "common.schema.json#/$defs/localized" }, "url": { "$ref": "common.schema.json#/$defs/httpsUrl" } }, "additionalProperties": false } }
+      },
+      "additionalProperties": false
+    },
+    "mapCredit": { "type": "object", "required": ["label", "url"], "properties": { "label": { "type": "string" }, "url": { "$ref": "common.schema.json#/$defs/httpsUrl" } }, "additionalProperties": false },
+    "publisherLogo": { "$ref": "common.schema.json#/$defs/httpsUrl", "description": "Logo URL for structured data" },
+    "credit": { "type": "boolean", "description": "Show 'Built with event-closures-map by Tomatic' in the footer. Please keep it on." }
+  },
+  "additionalProperties": false
+}

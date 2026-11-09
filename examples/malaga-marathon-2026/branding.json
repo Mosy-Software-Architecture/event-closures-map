@@ -1,0 +1,86 @@
+{
+  "$schema": "../../schemas/branding.schema.json",
+  "name": "Tomatic",
+  "legalName": "MOSY SOFTWARE ARCHITECTURE SL",
+  "url": "https://tomatic.ai/?utm_source=maraton-malaga&utm_medium=referral&utm_campaign=cortes-maraton-2026",
+  "logo": {
+    "src": "assets/tomatic-wordmark.svg",
+    "srcDark": "assets/tomatic-wordmark-dark.svg",
+    "alt": "Tomatic",
+    "height": 22
+  },
+  "favicon": {
+    "letter": "T"
+  },
+  "title": {
+    "es": "Cortes · Maratón de Málaga",
+    "en": "Málaga Marathon closures"
+  },
+  "subtitle": {
+    "es": "Domingo 8 de noviembre de 2026. Mueve la hora para ver los cortes de ese momento. Toca una calle para consultar su horario.",
+    "en": "Sunday 8 November 2026. Move the time to see the closures at that moment. Tap a street to see its hours."
+  },
+  "colors": {
+    "accent": "#e03634",
+    "ink": "#204246",
+    "inkSoft": "#4a6165",
+    "dark": {
+      "accent": "#f05a52",
+      "ink": "#e8eeee",
+      "inkSoft": "#a9b8ba"
+    }
+  },
+  "font": {
+    "family": "Manrope",
+    "googleFonts": "Manrope:wght@400;500;600;700;800"
+  },
+  "cta": {
+    "text": {
+      "es": "Este mapa lo ha hecho Mosy Software Architecture, una empresa de Málaga que opera con la marca Tomatic para desarrollar software y asistentes de IA a medida.",
+      "en": "This map was made by Mosy Software Architecture, a Málaga company that builds custom software and AI assistants under the Tomatic brand."
+    },
+    "button": {
+      "es": "Conocer Tomatic",
+      "en": "About Tomatic"
+    },
+    "url": "https://tomatic.ai/?utm_source=maraton-malaga&utm_medium=referral&utm_campaign=cortes-maraton-2026"
+  },
+  "legal": {
+    "paragraphs": [
+      {
+        "es": "Aviso legal. Esta página es una iniciativa particular de MOSY SOFTWARE ARCHITECTURE SL, que opera con la marca Tomatic, sin vinculación con el Ayuntamiento de Málaga, la Policía Local, la EMT, la Autoridad Portuaria ni la organización de la Generali Maratón de Málaga. Las marcas citadas pertenecen a sus titulares.",
+        "en": "Legal notice. This page is a private initiative of MOSY SOFTWARE ARCHITECTURE SL, trading as Tomatic, with no connection to Málaga City Council, the local police, EMT, the Port Authority or the organisers of the Generali Maratón de Málaga. Trademarks belong to their owners."
+      },
+      {
+        "es": "La información se ofrece tal cual y con fines informativos, sin garantía de exactitud, integridad o vigencia. El trazado de las calles es aproximado y puede no coincidir con el dispositivo real (carriles auxiliares, sentidos, tramos). Tomatic no se responsabiliza de decisiones, retrasos, sanciones o daños derivados de su uso. Ante cualquier duda prevalecen la señalización, los agentes y las fuentes oficiales.",
+        "en": "The information is provided as is for information purposes only, with no warranty of accuracy, completeness or currency. Street outlines are approximate and may not match the actual arrangement (service lanes, directions, sections). Tomatic accepts no liability for decisions, delays, fines or damage arising from its use. In case of doubt, signage, officers and official sources prevail."
+      },
+      {
+        "es": "Datos del mapa © colaboradores de OpenStreetMap, licencia ODbL; teselas de openstreetmap.org. Esta página no usa cookies ni herramientas de seguimiento. Los enlaces a tomatic.ai llevan parámetros de origen (UTM) para saber cuánta gente llega desde aquí.",
+        "en": "Map data © OpenStreetMap contributors, ODbL licence; tiles from openstreetmap.org. This page uses no cookies or tracking tools. Links to tomatic.ai carry source parameters (UTM) so we can tell how many people arrive from here."
+      }
+    ],
+    "links": [
+      {
+        "label": {
+          "es": "Aviso legal de Tomatic",
+          "en": "Tomatic legal notice"
+        },
+        "url": "https://tomatic.ai/aviso-legal"
+      },
+      {
+        "label": {
+          "es": "Privacidad",
+          "en": "Privacy"
+        },
+        "url": "https://tomatic.ai/privacidad"
+      }
+    ]
+  },
+  "mapCredit": {
+    "label": "Tomatic",
+    "url": "https://tomatic.ai/?utm_source=maraton-malaga&utm_medium=referral&utm_campaign=cortes-maraton-2026"
+  },
+  "publisherLogo": "https://tomatic.ai/og-tomatic.jpg",
+  "credit": true
+}

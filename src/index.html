@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="{{lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{seoTitle}}</title>
+{{headMeta}}
+<link rel="icon" href="{{favicon}}">
+{{fontLinks}}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="app.css?v={{version}}">
+<style id="brand">{{brandStyle}}</style>
+<script type="module" src="app.js?v={{version}}"></script>
+</head>
+<body>
+<header>
+  {{brand}}
+  <h1 id="title">{{title}}</h1>
+  <div id="lang" role="group"></div>
+</header>
+<div class="notice" id="noticewrap"><span id="noticeShort"></span><span id="notice"></span> <button type="button" id="noticeToggle" aria-expanded="false"></button></div>
+<div id="app">
+  <aside id="side">
+    <details class="block" id="updatesblock" hidden>
+      <summary><h2><span data-i18n="updatesTitle"></span> <span class="n" id="updatesCount"></span></h2></summary>
+      <ul class="list" id="updates"></ul>
+      <button class="btn" id="updatesToggle" type="button" hidden></button>
+      <p class="small" id="updatesMeta"></p>
+    </details>
+    <details class="block" id="legendblock">
+      <summary><h2 data-i18n="bands"></h2></summary>
+      <div class="legend" id="legend"></div>
+      <details class="sub"><summary data-i18n="listTitle"></summary>
+        <div id="staticlist">{{staticList}}</div>
+      </details>
+    </details>
+    <details class="block" id="routesblock" hidden>
+      <summary><h2 data-i18n="routeTitle"></h2></summary>
+      <p class="small" id="routeIntro"></p>
+      <div class="legend" id="routes"></div>
+    </details>
+    <div id="infoAfterRoutes"></div>
+    <details class="block" id="parkingblock" hidden>
+      <summary><h2 data-i18n="parkingTitle"></h2><label class="inline"><input type="checkbox" id="showbans" checked><span class="sw ban"></span><span data-i18n="bansShow"></span></label></summary>
+      <h3 data-i18n="bansTitle" id="bansTitle"></h3>
+      <ul class="list" id="bans"></ul>
+      <h3 data-i18n="carParksTitle" id="carParksTitle"></h3>
+      <ul class="list" id="parkings"></ul>
+      <p class="small" id="parkingNote"></p>
+    </details>
+    <div id="infoAfterParking"></div>
+  </aside>
+  <div id="mapwrap">
+    <div id="map"></div>
+    <div class="block" id="timecard">
+      <h2 data-i18n="hour"></h2>
+      <div class="time"><span class="big" id="tlabel"></span><span class="count" id="tcount"></span></div>
+      <input type="range" id="slider">
+      <div class="ticks" id="ticks"></div>
+      <div class="row">
+        <button class="btn on" id="allday" data-i18n="allDay"></button>
+        <button class="btn" id="now" data-i18n="now"></button>
+        <button class="btn" id="fit" data-i18n="fit"></button>
+      </div>
+      <p class="subtitle" id="subtitle">{{subtitle}}</p>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="cta" id="cta" hidden><span id="ctaText"></span><a class="btn" id="ctaBtn" target="_blank" rel="noopener"></a></div>
+  <details class="block" id="sourcesblock">
+    <summary><h2 data-i18n="sourcesTitle"></h2></summary>
+    <p class="small" data-i18n="sourcesIntro"></p>
+    <ul class="list" id="sources"></ul>
+    <p class="small" id="dataNotes"></p>
+  </details>
+  <details class="block">
+    <summary><h2 data-i18n="legalTitle"></h2></summary>
+    <div id="legal"></div>
+    <p id="legalLinks"></p>
+  </details>
+  <p class="credit" id="credit"></p>
+</footer>
+</body>
+</html>

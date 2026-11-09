@@ -1,0 +1,9 @@
+{
+  "$id": "i18n.schema.json",
+  "title": "Interface text overrides",
+  "description": "Per language, any key of src/strings.js. Unknown keys are reported by validate.",
+  "type": "object",
+  "properties": { "$schema": { "type": "string" } },
+  "propertyNames": { "pattern": "^(\\$schema|[a-z]{2,3})$" },
+  "additionalProperties": { "type": "object", "additionalProperties": { "type": "string" } }
+}
