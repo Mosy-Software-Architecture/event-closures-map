@@ -1,0 +1,14 @@
+# Template: set the calendar to the hours around your event, copy to ~/.config/systemd/user/
+# and enable with: systemctl --user enable --now event-closures-watch.timer
+[Unit]
+Description=event-closures-map: latest-updates watch during the event
+
+[Timer]
+# Example: the evening before, every hour; the event day, every 30 minutes from 06:30 to 15:30.
+OnCalendar=2027-04-24 17..23:00:00
+OnCalendar=2027-04-25 06..15:00,30:00
+Persistent=false
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

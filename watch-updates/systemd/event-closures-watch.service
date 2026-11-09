@@ -1,0 +1,9 @@
+# Template: replace <REPO> and <WATCH_ENV>, copy to ~/.config/systemd/user/
+[Unit]
+Description=event-closures-map: look for latest updates and publish them
+
+[Service]
+Type=oneshot
+ExecStart=<REPO>/watch-updates/check-updates.sh <WATCH_ENV>
+Environment=LANG=C.UTF-8
+TimeoutStartSec=20min

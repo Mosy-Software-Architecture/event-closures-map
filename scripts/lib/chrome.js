@@ -45,7 +45,7 @@ export async function openPage(port) {
 }
 
 // Loads a URL at a viewport size and collects what went wrong on the way.
-export async function inspect(url, { width = 1280, height = 800, scale = 1, mobile = false, settleMs = 1500, screenshot = true } = {}) {
+export async function inspect(url, { width = 1280, height = 800, scale = 1, mobile = false, settleMs = 1500, screenshot = true, colorScheme = null } = {}) {
   const chrome = await launch();
   try {
     const page = await openPage(chrome.port);
@@ -57,6 +57,7 @@ export async function inspect(url, { width = 1280, height = 800, scale = 1, mobi
     });
     await page.send('Runtime.enable'); await page.send('Log.enable'); await page.send('Page.enable');
     await page.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile });
+    if (colorScheme) await page.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: colorScheme }] });
     await page.send('Page.navigate', { url });
     let ready = false;
     for (let i = 0; i < 100 && !ready; i++) { await sleep(100); ready = await page.evaluate("document.documentElement.dataset.ready === '1'").catch(() => false); }
