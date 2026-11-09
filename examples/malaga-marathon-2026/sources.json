@@ -1,0 +1,69 @@
+{
+  "$schema": "../../schemas/sources.schema.json",
+  "sources": [
+    {
+      "title": {
+        "es": "Ayuntamiento de Málaga: comunicado oficial de Movilidad con calles, horarios, aparcamientos y EMT (PDF, 3-nov-2026)",
+        "en": "Málaga City Council: official mobility notice with streets, times, car parks and buses (PDF, 3 Nov 2026)"
+      },
+      "url": "https://www.malaga.eu/visorcontenido/ANUDocumentDisplayer/180297/COMUNICADO.pdf",
+      "primary": true
+    },
+    {
+      "title": {
+        "es": "Ayuntamiento de Málaga: nota de prensa y cartel oficial del circuito por colores",
+        "en": "Málaga City Council: press release and official colour-coded course poster"
+      },
+      "url": "https://www.malaga.eu/el-ayuntamiento/notas-de-prensa/detalle-de-la-nota-de-prensa/index.html?id=178956"
+    },
+    {
+      "title": {
+        "es": "Área de Movilidad en X (@movilidadmlg): tráfico en tiempo real",
+        "en": "Mobility department on X (@movilidadmlg): real-time traffic"
+      },
+      "url": "https://x.com/movilidadmlg"
+    },
+    {
+      "title": {
+        "es": "Generali Maratón Málaga: recorrido oficial",
+        "en": "Generali Maratón Málaga: official course"
+      },
+      "url": "https://www.generalimaratonmalaga.com/recorrido-generali-maraton-malaga/"
+    },
+    {
+      "title": {
+        "es": "Área de Movilidad del Ayuntamiento de Málaga",
+        "en": "Málaga City Council mobility department"
+      },
+      "url": "https://movilidad.malaga.eu/"
+    },
+    {
+      "title": {
+        "es": "EMT Málaga: avisos de líneas y desvíos",
+        "en": "EMT Málaga (city buses): service notices and diversions"
+      },
+      "url": "https://www.emtmalaga.es/"
+    },
+    {
+      "title": {
+        "es": "Consorcio de Transporte Metropolitano: afecciones en rutas interurbanas",
+        "en": "Metropolitan Transport Consortium: changes to intercity routes"
+      },
+      "url": "https://ctmam.es/afecciones-en-varias-rutas-del-consorcio-con-motivo-de-la-maraton-de-malaga-del-domingo-8-de-noviembre/"
+    },
+    {
+      "title": {
+        "es": "Autoridad Portuaria de Málaga",
+        "en": "Port Authority of Málaga"
+      },
+      "url": "https://www.puertomalaga.com/"
+    },
+    {
+      "title": {
+        "es": "Área de Deporte: ficha de la Generali Maratón Málaga 2026",
+        "en": "Sports department: Generali Maratón Málaga 2026 event page"
+      },
+      "url": "https://deporte.malaga.eu/agenda/detalle-de-actividad/index.html?id=149473"
+    }
+  ]
+}

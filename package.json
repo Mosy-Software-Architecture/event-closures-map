@@ -1,0 +1,25 @@
+{
+  "name": "event-closures-map",
+  "version": "1.0.0",
+  "description": "Static, JSON-configured map of the road closures caused by an event (marathons, parades, races).",
+  "license": "Apache-2.0",
+  "author": "MOSY SOFTWARE ARCHITECTURE SL (Tomatic) <https://tomatic.ai>",
+  "repository": { "type": "git", "url": "https://github.com/Mosy-Software-Architecture/event-closures-map.git" },
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "validate": "node scripts/validate.js",
+    "fetch-streets": "node scripts/fetch-streets.js",
+    "gpx-to-routes": "node scripts/gpx-to-routes.js",
+    "build": "node scripts/build.js",
+    "preview": "node scripts/preview.js",
+    "og": "node scripts/og.js",
+    "deploy": "node scripts/deploy.js",
+    "smoke": "node scripts/smoke.js",
+    "test": "node --test \"test/*.test.js\"",
+    "example": "node scripts/dev.js --data examples/malaga-marathon-2026"
+  },
+  "keywords": ["map", "road closures", "traffic", "marathon", "leaflet", "openstreetmap", "events"]
+}

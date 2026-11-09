@@ -1,0 +1,12 @@
+{
+  "$schema": "../schemas/event.schema.json",
+  "id": "my-event",
+  "name": { "en": "My city run", "es": "Mi carrera popular" },
+  "city": "Madrid",
+  "country": "ES",
+  "date": "2027-04-25",
+  "timezone": "Europe/Madrid",
+  "languages": ["en", "es"],
+  "timeline": { "start": "08:00", "end": "14:00", "step": 5 },
+  "map": { "center": [40.4168, -3.7038], "zoom": 14, "bbox": [-3.80, 40.37, -3.62, 40.47] }
+}

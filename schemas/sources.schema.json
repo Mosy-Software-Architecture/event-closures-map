@@ -1,0 +1,20 @@
+{
+  "$id": "sources.schema.json",
+  "title": "Sources",
+  "description": "Official sources. Mark the one the map is built from with primary: true.",
+  "type": "object",
+  "required": ["sources"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "url"],
+        "properties": { "title": { "$ref": "common.schema.json#/$defs/localized" }, "url": { "$ref": "common.schema.json#/$defs/httpsUrl" }, "primary": { "type": "boolean" } },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

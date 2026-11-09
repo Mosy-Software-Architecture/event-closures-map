@@ -1,0 +1,26 @@
+{
+  "$id": "updates.schema.json",
+  "title": "Latest updates",
+  "description": "Written by a person or by watch-updates. Same contract as the live file, so it can be replaced without a rebuild.",
+  "type": "object",
+  "required": ["items"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "updated": { "type": "string" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["time"],
+        "properties": {
+          "time": { "type": "string", "description": "ISO 8601 with offset" },
+          "source": { "type": "string" },
+          "url": { "$ref": "common.schema.json#/$defs/httpsUrl" }
+        },
+        "propertyNames": { "pattern": "^(time|source|url|[a-z]{2,3})$" },
+        "additionalProperties": { "type": "string" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

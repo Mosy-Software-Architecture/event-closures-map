@@ -1,0 +1,14 @@
+{
+  "elements": [
+    { "type": "way", "id": 1, "tags": { "highway": "primary", "name": "Calle Mármoles" }, "geometry": [{ "lat": 36.72, "lon": -4.43 }, { "lat": 36.721, "lon": -4.431 }] },
+    { "type": "way", "id": 2, "tags": { "highway": "primary", "name": "Calle Marmoles" }, "geometry": [{ "lat": 36.721, "lon": -4.431 }, { "lat": 36.722, "lon": -4.432 }] },
+    { "type": "way", "id": 3, "tags": { "highway": "footway", "name": "Calle Mármoles" }, "geometry": [{ "lat": 36.72, "lon": -4.43 }, { "lat": 36.7201, "lon": -4.4301 }] },
+    { "type": "way", "id": 10, "tags": { "highway": "residential", "name": "Calle Alemania" }, "geometry": [{ "lat": 36.718, "lon": -4.42 }, { "lat": 36.7185, "lon": -4.421 }] },
+    { "type": "way", "id": 11, "tags": { "highway": "residential", "name": "Calle Alemania" }, "geometry": [{ "lat": 36.72, "lon": -4.30 }, { "lat": 36.7205, "lon": -4.301 }] },
+    { "type": "way", "id": 20, "tags": { "man_made": "pier", "name": "Dique de Levante" }, "geometry": [{ "lat": 36.71, "lon": -4.41 }, { "lat": 36.705, "lon": -4.405 }] },
+    { "type": "way", "id": 30, "tags": { "bridge": "yes", "highway": "primary", "name": "Avenida de Valle-Inclán" }, "geometry": [{ "lat": 36.73, "lon": -4.425 }, { "lat": 36.7305, "lon": -4.4245 }] },
+    { "type": "way", "id": 40, "tags": { "place": "square", "name": "Plaza Mayor" }, "geometry": [{ "lat": 36.72, "lon": -4.42 }, { "lat": 36.72, "lon": -4.419 }, { "lat": 36.721, "lon": -4.419 }, { "lat": 36.72, "lon": -4.42 }] },
+    { "type": "way", "id": 50, "tags": { "highway": "pedestrian", "name": "Pasaje Solo Peatonal" }, "geometry": [{ "lat": 36.72, "lon": -4.42 }, { "lat": 36.7201, "lon": -4.4201 }] },
+    { "type": "way", "id": 60, "tags": { "highway": "footway", "name": "Paseo Escalera" }, "geometry": [{ "lat": 36.72, "lon": -4.42 }, { "lat": 36.7201, "lon": -4.4201 }] }
+  ]
+}

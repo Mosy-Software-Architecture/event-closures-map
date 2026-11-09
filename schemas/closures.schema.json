@@ -1,0 +1,56 @@
+{
+  "$id": "closures.schema.json",
+  "title": "Closures",
+  "description": "Time slots (bands) and the streets closed in each one.",
+  "type": "object",
+  "required": ["bands", "streets"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "bands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "from", "to", "color"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" },
+          "from": { "$ref": "common.schema.json#/$defs/time" },
+          "to": { "$ref": "common.schema.json#/$defs/time" },
+          "color": { "$ref": "common.schema.json#/$defs/color" },
+          "label": { "$ref": "common.schema.json#/$defs/localized" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "streets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "bands"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9_-]+$" },
+          "name": { "$ref": "common.schema.json#/$defs/localized" },
+          "bands": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "note": { "$ref": "common.schema.json#/$defs/localized" },
+          "uncertain": { "type": "boolean", "description": "Drawn with a dashed grey casing and flagged in the popup" },
+          "osm": {
+            "type": "object",
+            "description": "How fetch-streets finds the geometry. 'match' is a case-insensitive regex on the OSM name; 'ways' are explicit way ids.",
+            "properties": {
+              "match": { "type": "string" },
+              "ways": { "type": "array", "items": { "type": "integer" } },
+              "bbox": { "$ref": "common.schema.json#/$defs/bbox" },
+              "anyTag": { "type": "boolean", "description": "Also match ways without a highway tag (piers, breakwaters)" },
+              "includeFootways": { "type": "boolean" },
+              "as": { "enum": ["line", "polygon"] },
+              "resolved": { "type": "array", "items": { "type": "integer" }, "description": "Way ids used for the current geometry (written by fetch-streets)" }
+            },
+            "additionalProperties": false
+          },
+          "geometry": { "$ref": "common.schema.json#/$defs/geometry" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,144 @@
+{
+  "$schema": "../../schemas/event.schema.json",
+  "id": "malaga-marathon-2026",
+  "name": {
+    "es": "Generali Maratón de Málaga 2026",
+    "en": "Generali Málaga Marathon 2026"
+  },
+  "city": "Málaga",
+  "country": "ES",
+  "date": "2026-11-08",
+  "timezone": "Europe/Madrid",
+  "languages": [
+    "es",
+    "en"
+  ],
+  "timeline": {
+    "start": "08:00",
+    "end": "15:00",
+    "step": 5
+  },
+  "organizer": {
+    "name": "Generali Maratón Málaga",
+    "url": "https://www.generalimaratonmalaga.com/"
+  },
+  "map": {
+    "center": [36.715,-4.42],
+    "zoom": 13,
+    "bbox": [-4.52,36.66,-4.28,36.76]
+  },
+  "notice": {
+    "es": "**Información no oficial.** Elaborada a partir del aviso del Ayuntamiento de Málaga del 3 de noviembre de 2026. Los horarios y las calles pueden cambiar: antes de salir, [consulta las fuentes oficiales]({url}) y sigue las indicaciones de la Policía Local.",
+    "en": "**Unofficial information.** Based on the Málaga City Council notice of 3 November 2026. Streets and times can change: before you go out, [check the official sources]({url}) and follow the local police instructions."
+  },
+  "noticeShort": {
+    "es": "**Información no oficial.** Antes de salir, [consulta las fuentes oficiales]({url}).",
+    "en": "**Unofficial information.** Before you go out, [check the official sources]({url})."
+  },
+  "info": [
+    {
+      "id": "race",
+      "title": {
+        "es": "Horarios oficiales de la prueba",
+        "en": "Official race times"
+      },
+      "placement": "afterRoutes",
+      "items": [
+        {
+          "es": "**Salida**: 8:30 en el Paseo del Parque, frente al Ayuntamiento, para el maratón y el medio maratón. Oleadas a las 8:30, 8:40 y 8:45.",
+          "en": "**Start**: 8:30 on Paseo del Parque, in front of City Hall, for both the marathon and the half marathon. Waves at 8:30, 8:40 and 8:45."
+        },
+        {
+          "es": "**Tiempo máximo**: 5 h 30 el maratón (último corredor en meta hacia las 14:00) y 2 h 45 el medio maratón (hacia las 11:15), con meta en la avenida Cánovas del Castillo.",
+          "en": "**Time limit**: 5 h 30 for the marathon (last runner at the finish around 14:00) and 2 h 45 for the half marathon (around 11:15), with the finish on Avenida Cánovas del Castillo."
+        },
+        {
+          "es": "**Paseo del Parque** cortado desde el sábado 7 a las 20:00 hasta el domingo 8 sobre las 18:00, por el montaje y desmontaje de salida y meta.",
+          "en": "**Paseo del Parque** closed from Saturday 7 at 20:00 until Sunday 8 at about 18:00 for setting up and dismantling the start and finish."
+        }
+      ],
+      "footnote": {
+        "es": "Fuente: guía oficial del corredor 2026 y comunicado de Movilidad.",
+        "en": "Source: official 2026 runner's guide and the mobility notice."
+      }
+    },
+    {
+      "id": "transport",
+      "title": {
+        "es": "Transporte público",
+        "en": "Public transport"
+      },
+      "items": [
+        {
+          "es": "**EMT**: servicio desviado o interrumpido en varias líneas desde el sábado 7 a las 20:00 hasta el domingo 8 a las 18:00. Las líneas que cruzan el Parque hacia El Palo van por Alameda Principal, Cortina del Muelle y avenida Cervantes; hacia la avenida de Andalucía, por Paseo de los Curas, Muelle Heredia y calle Córdoba. El detalle por línea está en la web y la app de la EMT.",
+          "en": "**EMT city buses**: several lines diverted or suspended from Saturday 7 at 20:00 until Sunday 8 at 18:00. Lines crossing the Parque towards El Palo run via Alameda Principal, Cortina del Muelle and Avenida Cervantes; towards Avenida de Andalucía, via Paseo de los Curas, Muelle Heredia and Calle Córdoba. Line-by-line details on the EMT website and app."
+        },
+        {
+          "es": "**Consorcio de Transporte**: mientras dure el corte de Muelle Heredia, las líneas M-110, M-113 y M-131 paran en Vialia (María Zambrano) y la M-160 en la plaza General Torrijos.",
+          "en": "**Metropolitan buses**: while Muelle Heredia is closed, lines M-110, M-113 and M-131 stop at Vialia (María Zambrano) and line M-160 at Plaza General Torrijos."
+        },
+        {
+          "es": "**En coche**: el Ayuntamiento recomienda la MA-20 y la AP-7 como itinerarios alternativos.",
+          "en": "**By car**: the City Council recommends the MA-20 and AP-7 as alternative routes."
+        },
+        {
+          "es": "**A pie**: en las calles valladas no se puede cruzar; en el Centro (Especerías, Cisneros, plaza de la Constitución y Larios) evita cruzar el circuito y sigue a los agentes.",
+          "en": "**On foot**: fenced streets cannot be crossed; in the centre (Especerías, Cisneros, Plaza de la Constitución and Larios) avoid crossing the course and follow the officers."
+        }
+      ]
+    }
+  ],
+  "dataNotes": {
+    "es": "Geometría de las calles: OpenStreetMap vía Overpass, descargada el 7 de noviembre de 2026. Horarios y prohibiciones: comunicado oficial de Movilidad del 3 de noviembre de 2026. El Ayuntamiento publica además un cartel con el circuito por colores, enlazado en las fuentes.",
+    "en": "Street geometry: OpenStreetMap via Overpass, downloaded on 7 November 2026. Times and parking bans: official mobility notice of 3 November 2026. The City Council also publishes a colour-coded course poster, linked under sources."
+  },
+  "updates": {
+    "path": "updates.json",
+    "refreshMinutes": 10
+  },
+  "og": {
+    "time": "10:30",
+    "center": [36.7185,-4.412],
+    "zoom": 14,
+    "mobileCenter": [36.711,-4.418],
+    "mobileZoom": 13
+  },
+  "site": {
+    "url": "https://cortes-trafico-maraton-malaga.tomatic.ai/",
+    "title": {
+      "es": "Cortes de tráfico por la Maratón de Málaga 2026: mapa de calles cortadas hora a hora",
+      "en": "Málaga Marathon 2026 road closures: hour-by-hour map of closed streets"
+    },
+    "description": {
+      "es": "Mapa interactivo de los cortes de tráfico de la Maratón de Málaga del domingo 8 de noviembre de 2026: calles cortadas por franja horaria, prohibiciones de aparcar, aparcamientos afectados, recorrido y desvíos de la EMT. Mueve la hora y mira qué está cortado.",
+      "en": "Interactive map of the road closures for the Málaga Marathon on Sunday 8 November 2026: closed streets by time slot, parking bans, affected car parks, course and bus diversions."
+    },
+    "keywords": "cortes de tráfico Málaga, maratón Málaga 2026, calles cortadas Málaga, maratón Málaga cortes, mapa cortes maratón Málaga, Generali Maratón Málaga tráfico, aparcar Málaga maratón, desvíos EMT maratón Málaga, Málaga 8 noviembre tráfico",
+    "ogTitle": {
+      "es": "Cortes de tráfico por la Maratón de Málaga 2026, hora a hora",
+      "en": "Málaga Marathon 2026 road closures, hour by hour"
+    },
+    "ogDescription": {
+      "es": "Mapa interactivo: mueve la hora y mira qué calles están cortadas, dónde no se puede aparcar y por dónde pasa la carrera. Domingo 8 de noviembre de 2026.",
+      "en": "Interactive map: move the time and see which streets are closed, where you cannot park and where the race goes. Sunday 8 November 2026."
+    },
+    "ogImage": "og.png",
+    "ogImageAlt": {
+      "es": "Mapa de Málaga con las calles cortadas por la maratón pintadas por franja horaria",
+      "en": "Map of Málaga with the streets closed by the marathon coloured by time slot"
+    },
+    "published": "2026-11-07",
+    "modified": "2026-11-07",
+    "structuredData": {
+      "type": "SportsEvent",
+      "startDate": "2026-11-08T08:30:00+01:00",
+      "endDate": "2026-11-08T14:30:00+01:00",
+      "place": "Paseo del Parque",
+      "citation": "https://www.malaga.eu/visorcontenido/ANUDocumentDisplayer/180297/COMUNICADO.pdf"
+    },
+    "firebase": {
+      "site": "tomatic-maraton",
+      "project": "mosy-platform"
+    }
+  }
+}

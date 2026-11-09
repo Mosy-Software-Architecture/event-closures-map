@@ -1,0 +1,42 @@
+{
+  "$id": "parking.schema.json",
+  "title": "Parking",
+  "description": "Parking bans (with or without geometry) and car parks with restricted access.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "note": { "$ref": "common.schema.json#/$defs/localized" },
+    "bans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "when"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "$ref": "common.schema.json#/$defs/localized" },
+          "when": { "$ref": "common.schema.json#/$defs/localized" },
+          "note": { "$ref": "common.schema.json#/$defs/localized" },
+          "osm": { "$ref": "closures.schema.json#/properties/streets/items/properties/osm" },
+          "geometry": { "$ref": "common.schema.json#/$defs/geometry" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "carParks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "lat", "lon"],
+        "properties": {
+          "name": { "$ref": "common.schema.json#/$defs/localized" },
+          "when": { "$ref": "common.schema.json#/$defs/localized" },
+          "access": { "$ref": "common.schema.json#/$defs/localized" },
+          "lat": { "$ref": "common.schema.json#/$defs/lat" },
+          "lon": { "$ref": "common.schema.json#/$defs/lon" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

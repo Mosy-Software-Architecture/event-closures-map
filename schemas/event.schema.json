@@ -1,0 +1,90 @@
+{
+  "$id": "event.schema.json",
+  "title": "Event",
+  "description": "The event: when and where it happens, the time window of the slider, and the texts that belong to this event.",
+  "type": "object",
+  "required": ["id", "name", "date", "timezone"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "name": { "$ref": "common.schema.json#/$defs/localized" },
+    "city": { "type": "string" },
+    "country": { "type": "string", "pattern": "^[A-Z]{2}$" },
+    "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "timezone": { "type": "string", "description": "IANA zone, e.g. Europe/Madrid" },
+    "languages": { "type": "array", "items": { "type": "string", "pattern": "^[a-z]{2,3}$" }, "minItems": 1, "description": "First one is the default" },
+    "timeline": {
+      "type": "object",
+      "properties": { "start": { "$ref": "common.schema.json#/$defs/time" }, "end": { "$ref": "common.schema.json#/$defs/time" }, "step": { "type": "integer", "minimum": 1, "maximum": 60 } },
+      "additionalProperties": false
+    },
+    "organizer": { "type": "object", "properties": { "name": { "type": "string" }, "url": { "$ref": "common.schema.json#/$defs/httpsUrl" } }, "additionalProperties": false },
+    "map": {
+      "type": "object",
+      "required": ["center", "zoom", "bbox"],
+      "properties": { "center": { "$ref": "common.schema.json#/$defs/latLon" }, "zoom": { "type": "number", "minimum": 1, "maximum": 19 }, "bbox": { "$ref": "common.schema.json#/$defs/bbox" } },
+      "additionalProperties": false
+    },
+    "notice": { "$ref": "common.schema.json#/$defs/localized", "description": "Rich. {url} is replaced by the primary source URL." },
+    "noticeShort": { "$ref": "common.schema.json#/$defs/localized" },
+    "info": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "items"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "$ref": "common.schema.json#/$defs/localized" },
+          "placement": { "enum": ["afterRoutes", "afterParking"] },
+          "items": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/localized" } },
+          "footnote": { "$ref": "common.schema.json#/$defs/localized" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "dataNotes": { "$ref": "common.schema.json#/$defs/localized" },
+    "updates": {
+      "type": "object",
+      "properties": { "path": { "type": "string", "pattern": "^[A-Za-z0-9_./-]+\\.json$" }, "refreshMinutes": { "type": "number", "minimum": 1 } },
+      "additionalProperties": false
+    },
+    "og": {
+      "type": "object",
+      "properties": {
+        "time": { "$ref": "common.schema.json#/$defs/time" },
+        "center": { "$ref": "common.schema.json#/$defs/latLon" }, "zoom": { "type": "number" },
+        "mobileCenter": { "$ref": "common.schema.json#/$defs/latLon" }, "mobileZoom": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "site": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "pattern": "^https://[^\\s]+/$", "description": "Canonical URL, with trailing slash" },
+        "title": { "$ref": "common.schema.json#/$defs/localized" },
+        "description": { "$ref": "common.schema.json#/$defs/localized" },
+        "keywords": { "type": "string" },
+        "ogTitle": { "$ref": "common.schema.json#/$defs/localized" },
+        "ogDescription": { "$ref": "common.schema.json#/$defs/localized" },
+        "ogImage": { "type": "string", "description": "File name in assets/, published at the site root" },
+        "ogImageAlt": { "$ref": "common.schema.json#/$defs/localized" },
+        "published": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "modified": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "noindex": { "type": "boolean" },
+        "structuredData": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "description": "schema.org type: Event, SportsEvent, Festival..." },
+            "startDate": { "type": "string" }, "endDate": { "type": "string" },
+            "place": { "type": "string" },
+            "citation": { "$ref": "common.schema.json#/$defs/httpsUrl" }
+          },
+          "additionalProperties": false
+        },
+        "firebase": { "type": "object", "required": ["site", "project"], "properties": { "site": { "type": "string" }, "project": { "type": "string" } }, "additionalProperties": false }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
