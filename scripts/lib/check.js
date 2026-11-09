@@ -59,7 +59,7 @@ export function checkData(data) {
     if (ids.has(s.id)) E('closures', p, `duplicate street id "${s.id}"`);
     ids.add(s.id);
     for (const b of s.bands) if (!bandIds.has(b)) E('closures', p, `band "${b}" does not exist (bands: ${[...bandIds].join(', ') || 'none'})`);
-    if (!s.geometry) W('closures', p, 'no geometry yet: run `npm run fetch-streets` or draw it by hand; the street will not be shown');
+    if (!s.geometry) W('closures', p, 'no geometry yet: run `npm run fetch-streets` (steer it with osm.match, osm.bbox or osm.ways); until then the street is listed but not drawn');
   });
 
   // geometry inside the event bbox

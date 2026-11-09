@@ -51,7 +51,7 @@ Schema en [`schemas/`](schemas); los editores que entienden `$schema` los autoco
 
 | Fichero | Obligatorio | Qué lleva |
 |---|---|---|
-| `event.json` | sí | Nombre, ciudad, fecha, zona horaria, idiomas, ventana del deslizador, centro y límites del mapa, el aviso, secciones libres de información (horarios de la prueba, transporte...), SEO y despliegue. |
+| `event.json` | sí | Nombre, ciudad, fecha, zona horaria, idiomas, ventana del deslizador, zona del mapa (`center`, `zoom`, `bbox`; el mapa se abre ajustado a las calles cortadas salvo con `"fit": false`), el aviso (`notice`, y `noticeShort` para móviles), secciones libres de información (horarios de la prueba, transporte...), SEO y despliegue. |
 | `branding.json` | sí | Nombre de la organización, logo (claro y oscuro), título, subtítulo, colores, tipografía, llamada a la acción, aviso legal y crédito del pie. |
 | `closures.json` | no | Franjas horarias (`bands`) y calles cortadas, cada una con sus franjas, notas y geometría GeoJSON. |
 | `parking.json` | no | Prohibiciones de aparcar (con o sin geometría) y aparcamientos con acceso limitado. |
@@ -98,7 +98,8 @@ franjas lleva las dos (`"bands": ["A", "G"]`); la segunda se pinta discontinua.
 | `npm run og` | Hace la imagen para redes (1200x630) a partir de la propia página (necesita Chrome). |
 | `npm run deploy` | Compila y publica en Firebase Hosting, conservando la última hora publicada. |
 | `npm test` | Pruebas unitarias (esquemas, validación, Overpass con una respuesta grabada, GPX, build, vigilante). |
-| `npm run smoke` | Carga `dist/` en Chrome sin ventana a tamaño escritorio y móvil, y falla si hay errores de consola, violaciones de la CSP o el mapa sale vacío (necesita Chrome; `CHROME_PATH` para indicar dónde). |
+| `npm run smoke` | Carga `dist/` en Chrome sin ventana a tamaño escritorio y móvil, en el idioma principal del evento, y falla si hay errores de consola, violaciones de la CSP o el mapa sale vacío (necesita Chrome; `CHROME_PATH` para indicar dónde). |
+| `npm run shot -- --time 10:30 --view 36.72,-4.42,16 --phone` | Una captura a una hora, zona y tamaño concretos, para revisar una franja o un barrio. La página acepta lo mismo con `?t=10:30&view=lat,lon,zoom`. |
 
 Todos aceptan `--data <dir>` o la variable de entorno `ECM_DATA`.
 
@@ -120,7 +121,8 @@ se afina:
 ```
 
 - `match`: expresión regular sin distinguir mayúsculas sobre el nombre en OSM (sintaxis POSIX: también la ejecuta Overpass).
-- `bbox`: acota la búsqueda cuando el mismo nombre existe en otro punto de la zona.
+- `bbox`: acota la búsqueda cuando el mismo nombre existe en otro punto de la zona, y corta las vías
+  en su borde, de modo que de una calle larga solo se pinta lo que queda dentro.
 - `ways`: identificadores de vías de OSM, para puentes sin nombre o tramos que no lo comparten.
 - `anyTag`: incluye vías sin etiqueta `highway` (diques, muelles).
 - `includeFootways`: las aceras, escaleras y caminos se descartan salvo que lo indiques.
@@ -128,7 +130,8 @@ se afina:
 
 Escribe la geometría y `osm.resolved` (las vías usadas) en el propio fichero. Las respuestas se
 guardan en `.cache/overpass/`; `--no-cache` vuelve a preguntar, `--force` repite las calles que ya
-tienen geometría, `--only id,id` limita la ejecución y `--dry-run` no escribe nada. `OVERPASS_URL`
+tienen geometría, `--only id,id` limita la ejecución y `--dry-run` no escribe nada. Las calles
+ambiguas se listan y se quedan sin geometría; `--accept-ambiguous` las escribe igualmente. `OVERPASS_URL`
 permite usar otra instancia de Overpass.
 
 ## Publicar

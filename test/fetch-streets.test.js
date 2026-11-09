@@ -65,3 +65,20 @@ test('streets that already have geometry are left alone unless forced', () => {
   assert.equal(targetsFrom(closures, null, event, {}).length, 0);
   assert.equal(targetsFrom(closures, null, event, { force: true }).length, 1);
 });
+
+test('an explicit osm.bbox cuts long ways at its edge', () => {
+  // way 1 runs from lon -4.430 to -4.431; cut it at -4.4305
+  const { closures, results } = run([{ id: 'marmoles', name: 'Calle Mármoles', bands: ['A'], osm: { match: '^Calle M[aá]rmoles$', bbox: [-4.52, 36.66, -4.4305, 36.76] } }]);
+  assert.deepEqual(results[0].ids, [1, 2]);
+  const lons = closures.streets[0].geometry.coordinates.flat().map(p => p[0]);
+  assert.ok(Math.max(...lons) <= -4.4305, String(lons));
+});
+
+test('ambiguous streets are reported but not written unless accepted', () => {
+  const closures = { bands: [], streets: [{ id: 'alemania', name: 'Calle Alemania', bands: ['A'] }] };
+  const results = resolve(targetsFrom(closures, null, event, {}), response);
+  apply(results);
+  assert.equal(closures.streets[0].geometry, undefined);
+  apply(results, { acceptAmbiguous: true });
+  assert.equal(closures.streets[0].geometry.type, 'MultiLineString');
+});

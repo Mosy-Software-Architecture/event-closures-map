@@ -120,6 +120,8 @@ footer #sourcesblock ul.list li{font-size:13.5px}
   .notice:not(.open) #notice{display:none}
   .notice:not(.open) #noticeShort{display:inline}
   #noticeToggle{display:inline}
+  .notice.noshort:not(.open) #notice{display:inline}
+  .notice.noshort #noticeToggle{display:none}
   #app{grid-template-columns:1fr;grid-template-rows:auto auto}
   #mapwrap{order:1;height:calc(100dvh - var(--topH, 120px));min-height:420px}
   #map{min-height:0}

@@ -67,13 +67,15 @@ Read the whole report, and act on each section:
   - the street is a bridge or square without its own name in OSM. Bridges usually carry the name of
     the avenue that crosses them: find the way ids and use `osm.ways`;
   - only footways matched (pedestrian streets mapped as `footway`): set `osm.includeFootways`.
-- **Ambiguous**: the name exists in two places. Narrow it with `osm.bbox` around the right one.
+- **Ambiguous**: the name exists in two places. Its geometry is not written. Narrow it with
+  `osm.bbox` around the right one (or `--accept-ambiguous` if every place is really closed).
 - **Matched names**: check them. A regex that is too loose picks up a car park or a building that
   happens to share the name.
 - Piers, breakwaters and terminals often have no `highway` tag: use `osm.anyTag`.
 - Squares and buildings read better as areas: `osm.as: "polygon"`.
 - If the course only uses part of a long street, limit it with `osm.bbox` (for example up to the
-  turnaround point of the GPX).
+  turnaround point of the GPX): an explicit `osm.bbox` cuts the ways at its edge, so only that part
+  is drawn. Use a box that ends where the closure ends.
 
 Never draw a line by hand from memory. If OpenStreetMap does not have it, leave the street without
 geometry: it will be listed in the crawlable list but not drawn, and you tell the person.
@@ -86,8 +88,15 @@ geometry: it will be listed in the crawlable list but not drawn, and you tell th
 - `routes.json`: get the official GPX (the organiser's website, or the public track they
   publish on a sports platform) and run `npm run gpx-to-routes -- course.gpx --id marathon`. If you only have last
   year's track, use it and say so in `source.label`. Add start and finish markers.
+- **No GPX at all** (the organiser only publishes a picture of the course): leave `routes.json` out.
+  The closures are what matters; the course is extra. Do not trace the course from the picture by
+  hand. Name the closed streets you can read from the picture, resolve them with `fetch-streets`,
+  cut long ones with `osm.bbox`, and say in `dataNotes` that the course comes from the picture.
+  If a public GPX of the course exists elsewhere, ask the person before using it and cite it.
 - `event.json` `info`: race times, public transport changes, alternative routes. One sentence per
   item, with `**bold**` for the subject.
+- `event.json` `notice`: if the data is provisional or invented (a test, a draft before the official
+  notice), say so here. Phones show `noticeShort`, or the full `notice` when there is no short one.
 
 ### 6. Validate, look, and show it
 
@@ -96,8 +105,9 @@ npm run validate
 npm run dev
 ```
 
-Then look at the map yourself: take a screenshot (`npm run build && npm run smoke` writes
-`dist/smoke/desktop.png` and `phone.png`) and check that each band falls where the notice says.
+Then look at the map yourself: take screenshots and check that each band falls where the notice
+says. `npm run shot -- --time 10:30` shows one moment; `--view lat,lon,zoom` one area; `--phone`
+the phone layout. The same work in the browser: `?t=10:30&view=36.72,-4.42,16`.
 Typical mistakes only the picture shows: a street in another neighbourhood, a line across the sea
 (swapped coordinates), a band missing from the centre. Show the person the screenshot and the list
 of notes, partial closures and uncertain streets before publishing.

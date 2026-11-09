@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// npm run fetch-streets [-- --data <dir>] [--only id,id] [--force] [--dry-run] [--no-cache]
+// npm run fetch-streets [-- --data <dir>] [--only id,id] [--force] [--dry-run] [--no-cache] [--accept-ambiguous]
 //
 // Resolves street names to OpenStreetMap geometry through the Overpass API and writes it into
 // closures.json (and parking.json for bans with an "osm" block). It never invents a line: a street
@@ -10,7 +10,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { dataDir, readJSON, writeJSON, arg, flag, ROOT } from './lib/data.js';
-import { round5, clusters, haversine, inBbox } from './lib/geo.js';
+import { round5, clusters, haversine, inBbox, clipLine } from './lib/geo.js';
 
 const SKIP_HIGHWAYS = new Set(['footway', 'steps', 'path', 'cycleway', 'platform', 'corridor', 'bus_stop', 'elevator', 'bridleway', 'proposed', 'construction']);
 const ENDPOINTS = (process.env.OVERPASS_URL || 'https://overpass-api.de/api/interpreter,https://overpass.kumi.systems/api/interpreter').split(',');
@@ -42,7 +42,7 @@ export function targetsFrom(closures, parking, event, { only, force } = {}) {
     const name = typeof item.name === 'object' ? (item.name[lang] ?? Object.values(item.name)[0]) : item.name;
     const osm = item.osm || {};
     const match = osm.match || (osm.ways && osm.ways.length ? null : nameToPattern(name));
-    list.push({ kind, item, name, match, derived: !osm.match && !!match, ways: osm.ways || [], bbox: osm.bbox || event.map.bbox, anyTag: !!osm.anyTag, footways: !!osm.includeFootways, polygon: osm.as === 'polygon' });
+    list.push({ kind, item, name, match, derived: !osm.match && !!match, ways: osm.ways || [], bbox: osm.bbox || event.map.bbox, clip: !!osm.bbox && osm.as !== 'polygon', anyTag: !!osm.anyTag, footways: !!osm.includeFootways, polygon: osm.as === 'polygon' });
   };
   for (const s of closures.streets) add('street', s);
   for (const b of (parking && parking.bans) || []) add('ban', b);
@@ -96,7 +96,10 @@ export function resolve(targets, response) {
       if (!pts.some(p => inBbox(p, t.bbox))) continue;
       picked.set(w.id, w);
     }
-    const lines = [...picked.values()].map(w => w.geometry.map(p => [round5(p.lon), round5(p.lat)]));
+    let lines = [...picked.values()].map(w => w.geometry.map(p => [p.lon, p.lat]));
+    // an explicit osm.bbox also cuts the ways at its edge, so only the part of a long street inside it is drawn
+    if (t.clip) lines = lines.flatMap(l => clipLine(l, t.bbox));
+    lines = lines.map(l => l.map(([lon, lat]) => [round5(lon), round5(lat)])).filter(l => l.length > 1);
     let geometry = null;
     if (lines.length) {
       if (t.polygon) {
@@ -125,10 +128,11 @@ export function resolve(targets, response) {
   return results;
 }
 
-export function apply(results) {
+// Ambiguous streets are not written unless acceptAmbiguous: drawing two places at once is worse than none.
+export function apply(results, { acceptAmbiguous = false } = {}) {
   for (const r of results) {
     const it = r.target.item;
-    if (!r.geometry) continue;
+    if (!r.geometry || (r.ambiguous.length && !acceptAmbiguous)) continue;
     it.geometry = r.geometry;
     it.osm = { ...(it.osm || {}), ...(r.target.derived ? { match: r.target.match } : {}), resolved: r.ids };
   }
@@ -143,12 +147,12 @@ function report(results) {
   }
   for (const r of results) if (r.missingIds.length) console.log(`✗ ${r.target.item.id}: way id(s) ${r.missingIds.join(', ')} not returned by Overpass`);
   if (amb.length) {
-    console.log(`\n⚠ ${amb.length} ambiguous: the same name matches places more than ${AMBIGUOUS_M / 1000} km apart. Narrow them with osm.bbox [west, south, east, north] or osm.ways:`);
+    console.log(`\n⚠ ${amb.length} ambiguous: the same name matches places more than ${AMBIGUOUS_M / 1000} km apart. Their geometry is NOT written. Narrow them with osm.bbox [west, south, east, north] or osm.ways (or rerun with --accept-ambiguous if every place is right):`);
     for (const r of amb) console.log(`  - ${r.target.item.id} ("${r.target.name}"): ${r.ambiguous.map(g => `${g.ways} way(s) around [${g.center.join(', ')}]`).join('; ')}`);
   }
   if (notFound.length) {
     console.log(`\n✗ ${notFound.length} not found. Nothing was drawn for them. Check the OSM name on openstreetmap.org and set osm.match (regex) or osm.ways:`);
-    for (const r of notFound) console.log(`  - ${r.target.item.id} ("${r.target.name}") tried ${r.target.match ? `/${r.target.match}/i` : ''}${r.target.ways.length ? ` ways ${r.target.ways.join(',')}` : ''}${Object.keys(r.skipped).length ? `; only footpaths matched (${Object.keys(r.skipped).join(', ')}), set osm.includeFootways: true if they count` : ''}`);
+    for (const r of notFound) console.log(`  - ${r.target.item.id}: no OSM way named "${r.target.name}"${r.target.derived ? ' (accents and case ignored)' : r.target.match ? ` matching /${r.target.match}/i` : ''}${r.target.ways.length ? ` ways ${r.target.ways.join(',')}` : ''}${Object.keys(r.skipped).length ? `; only footpaths matched (${Object.keys(r.skipped).join(', ')}), set osm.includeFootways: true if they count` : ''}`);
   }
   return { notFound: notFound.map(r => r.target.item.id), ambiguous: amb.map(r => r.target.item.id) };
 }
@@ -170,10 +174,10 @@ async function main() {
   const results = resolve(targets, response);
   const summary = report(results);
   if (flag('--dry-run')) { console.log('\n(dry run: nothing written)'); return summary; }
-  apply(results);
+  apply(results, { acceptAmbiguous: flag('--accept-ambiguous') });
   writeJSON(closuresPath, closures);
   if (parking && targets.some(t => t.kind === 'ban')) writeJSON(parkingPath, parking);
-  console.log(`\nWrote ${results.filter(r => r.geometry).length} geometries. Next: npm run validate, then look at them on the map with npm run dev.`);
+  console.log(`\nWrote ${results.filter(r => r.geometry && (!r.ambiguous.length || flag('--accept-ambiguous'))).length} geometries. Next: npm run validate, then look at them on the map with npm run dev.`);
   return summary;
 }
 

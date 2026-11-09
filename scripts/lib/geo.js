@@ -49,3 +49,28 @@ export function clusters(lines, maxGapM = 150) {
   lines.forEach((l, i) => { const r = find(i); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(i); });
   return [...groups.values()];
 }
+
+// Cuts a [lon, lat] line to a bbox [west, south, east, north] (Liang-Barsky per segment).
+// Returns the pieces inside, so a line that leaves and comes back gives two lines.
+export function clipLine(points, [w, s, e, n]) {
+  const out = [];
+  let cur = null;
+  const push = p => { if (!cur) { cur = [p]; out.push(cur); } else { const l = cur.at(-1); if (l[0] !== p[0] || l[1] !== p[1]) cur.push(p); } };
+  for (let i = 1; i < points.length; i++) {
+    const [x0, y0] = points[i - 1], [x1, y1] = points[i];
+    const dx = x1 - x0, dy = y1 - y0;
+    let t0 = 0, t1 = 1, visible = true;
+    for (const [p, q] of [[-dx, x0 - w], [dx, e - x0], [-dy, y0 - s], [dy, n - y0]]) {
+      if (p === 0) { if (q < 0) { visible = false; break; } continue; }
+      const r = q / p;
+      if (p < 0) { if (r > t1) { visible = false; break; } if (r > t0) t0 = r; }
+      else { if (r < t0) { visible = false; break; } if (r < t1) t1 = r; }
+    }
+    if (!visible) { cur = null; continue; }
+    const a = [x0 + t0 * dx, y0 + t0 * dy], b = [x0 + t1 * dx, y0 + t1 * dy];
+    if (t0 > 0) cur = null;          // the segment enters here: start a new piece
+    push(a); push(b);
+    if (t1 < 1) cur = null;          // and leaves here
+  }
+  return out.filter(l => l.length > 1);
+}

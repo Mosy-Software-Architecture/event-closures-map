@@ -1,12 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, mkdtempSync, existsSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { build } from '../scripts/build.js';
-import { EXAMPLE, STARTER, copyData, read, write } from './helpers.js';
+import { EXAMPLE, STARTER, copyData, read, write, tmp } from './helpers.js';
 
-const out = () => mkdtempSync(join(tmpdir(), 'ecm-build-'));
+const out = () => tmp('ecm-build-');
 
 test('the example builds with SEO tags, the crawlable list and no executable inline script', () => {
   const o = out();
