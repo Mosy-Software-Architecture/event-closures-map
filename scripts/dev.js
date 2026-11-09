@@ -23,7 +23,8 @@ function report() {
 }
 
 createServer((req, res) => {
-  const path = decodeURIComponent(new URL(req.url, 'http://x').pathname).replace(/^\/+/, '') || 'index.html';
+  let path;
+  try { path = decodeURIComponent(new URL(req.url, 'http://x').pathname).replace(/^\/+/, '') || 'index.html'; } catch (e) { res.writeHead(400); res.end('bad request'); return; }
   if (path === '__dev/reload.js') { res.writeHead(200, { 'Content-Type': 'text/javascript' }); res.end(RELOAD); return; }
   if (path === '__dev/events') {
     res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });

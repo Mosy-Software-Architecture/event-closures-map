@@ -19,3 +19,12 @@ test('geometry types are limited to lines and polygons', () => {
   const e = validate(s, 'closures.schema.json', get);
   assert.ok(e.some(x => x.path === '/streets/0/geometry/type'), JSON.stringify(e));
 });
+
+test('paths and URLs that could escape or mislead are rejected', () => {
+  const base = { id: 'x', name: 'X', date: '2027-01-01', timezone: 'UTC' };
+  for (const path of ['../index.json', '/updates.json', 'a/../b.json', 'index.html']) assert.ok(validate({ ...base, updates: { path } }, 'event.schema.json', get).length, path);
+  assert.deepEqual(validate({ ...base, updates: { path: 'data/updates.json' } }, 'event.schema.json', get), []);
+  assert.ok(validate({ ...base, site: { ogImage: '../../x.png' } }, 'event.schema.json', get).length);
+  for (const url of ['https://evil.com\\@malaga.eu/x', 'https://user@malaga.eu/', 'https://malaga.eu:8443/']) assert.ok(validate({ sources: [{ title: 'a', url }] }, 'sources.schema.json', get).length, url);
+  assert.deepEqual(validate({ sources: [{ title: 'a', url: 'https://medium.com/@someone/post?a=1#b' }] }, 'sources.schema.json', get), []);
+});

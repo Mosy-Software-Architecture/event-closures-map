@@ -28,8 +28,9 @@ test('firebase.json carries the security headers, with no unsafe-inline for scri
   const fb = JSON.parse(readFileSync(join(o, 'firebase.json'), 'utf8')).hosting;
   assert.equal(fb.site, 'tomatic-maraton');
   const h = Object.fromEntries(fb.headers[0].headers.map(x => [x.key, x.value]));
-  assert.match(h['Content-Security-Policy'], /script-src 'self' https:\/\/unpkg\.com;/);
-  assert.doesNotMatch(h['Content-Security-Policy'].split(';').find(d => d.includes('script-src')), /unsafe/);
+  assert.match(h['Content-Security-Policy'], /script-src 'self' https:\/\/unpkg\.com\/leaflet@1\.9\.4\/dist\/leaflet\.js;/);
+  assert.doesNotMatch(h['Content-Security-Policy'], /unsafe/);
+  assert.match(h['Content-Security-Policy'], /style-src 'self' 'sha256-[A-Za-z0-9+\/=]+'/);
   assert.equal(h['X-Frame-Options'], 'DENY');
   assert.match(h['Strict-Transport-Security'], /max-age=31536000/);
 });

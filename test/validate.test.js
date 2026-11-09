@@ -27,7 +27,7 @@ test('a street that uses a band that does not exist is an error', () => {
 test('a URL that is not https is an error, in a field and inside rich text', () => {
   let dir = copyData(EXAMPLE);
   const s = read(dir, 'sources'); s.sources[1].url = 'http://example.org/'; write(dir, 'sources', s);
-  assert.deepEqual(errorsOf(dir), ['sources.json /sources/1/url: "http://example.org/" is not valid: expected Absolute https:// URL']);
+  assert.deepEqual(errorsOf(dir), ['sources.json /sources/1/url: "http://example.org/" is not valid: expected Absolute https:// URL, without user, port or backslashes']);
   dir = copyData(EXAMPLE);
   const e = read(dir, 'event'); e.info[0].items[0].en = 'See [this](http://example.org/)'; write(dir, 'event', e);
   assert.deepEqual(errorsOf(dir), ['event.json /info/0/items/0/en: link http://example.org/ must use https://']);

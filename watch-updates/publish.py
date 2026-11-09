@@ -8,7 +8,7 @@ Usage: publish.py --site <firebase-site> --key /path/sa.json FILE[=served/path] 
        publish.py --site <firebase-site> --adc ~/.config/event-closures-map/adc.json updates.json=/data/updates.json
        publish.py --site <firebase-site> --token "$(gcloud auth application-default print-access-token)" updates.json
 """
-import argparse, base64, gzip, hashlib, json, os, subprocess, sys, time, urllib.request, urllib.error, urllib.parse
+import argparse, base64, re, gzip, hashlib, json, os, subprocess, sys, time, urllib.request, urllib.error, urllib.parse
 
 API = "https://firebasehosting.googleapis.com/v1beta1"
 
@@ -78,6 +78,7 @@ def main():
     ap.add_argument("--key"); ap.add_argument("--adc"); ap.add_argument("--token")
     ap.add_argument("files", nargs="+", help="local path, optionally =served path (default /<basename>)")
     a = ap.parse_args()
+    a.token = a.token or os.environ.get("FIREBASE_ACCESS_TOKEN")  # prefer the env var: arguments show up in ps
     token = a.token or (token_from_key(a.key) if a.key else token_from_adc(a.adc) if a.adc else sys.exit("--key, --adc or --token"))
     site = f"sites/{a.site}"
 
@@ -94,7 +95,7 @@ def main():
         sys.exit("no live release found: refusing to publish a site with only " + ", ".join(files))
     if live:
         op = call(token, "POST", f"{API}/{site}/versions:clone", {"sourceVersion": live, "finalize": False,
-                   "exclude": {"regexes": ["^" + p.replace(".", r"\.") + "$" for p in files]}})
+                   "exclude": {"regexes": ["^" + re.escape(p) + "$" for p in files]}})
         version = wait_op(token, op["name"])["name"]
     else:
         version = call(token, "POST", f"{API}/{site}/versions", {})["name"]

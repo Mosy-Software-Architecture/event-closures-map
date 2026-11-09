@@ -13,7 +13,8 @@ import { updatesPath } from './lib/site.js';
 const out = join(ROOT, 'dist');
 const { data } = build(dataDir(), out);
 const site = data.event.site || {};
-if (!site.firebase) { console.error('✗ event.site.firebase {site, project} is not set. To publish elsewhere, upload dist/public to any static host (see README).'); process.exit(1); }
+const fb = { ...(site.firebase || {}), ...(process.env.FIREBASE_SITE ? { site: process.env.FIREBASE_SITE } : {}), ...(process.env.FIREBASE_PROJECT ? { project: process.env.FIREBASE_PROJECT } : {}) };
+if (!fb.site || !fb.project) { console.error('✗ event.site.firebase {site, project} is not set (FIREBASE_SITE and FIREBASE_PROJECT override it). To publish elsewhere, upload dist/public to any static host (see README).'); process.exit(1); }
 
 const up = updatesPath(data.event);
 if (site.url && !flag('--keep-local-updates')) {
@@ -34,7 +35,9 @@ if (site.url && !flag('--keep-local-updates')) {
   }
 }
 
-const cmd = ['--yes', 'firebase-tools@14', 'deploy', '--only', `hosting:${site.firebase.site}`, '--project', site.firebase.project, '--non-interactive'];
+// exact version: this runs with your cloud credentials, so no floating range
+const FIREBASE_TOOLS = 'firebase-tools@14.27.0';
+const cmd = ['--yes', FIREBASE_TOOLS, 'deploy', '--only', `hosting:${fb.site}`, '--project', fb.project, '--non-interactive'];
 console.log(`  npx ${cmd.join(' ')}  (in dist/)`);
 if (flag('--dry-run')) { console.log('(dry run: not published)'); process.exit(0); }
 const r = spawnSync('npx', cmd, { cwd: out, stdio: 'inherit', env: process.env });

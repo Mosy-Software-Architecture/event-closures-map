@@ -6,10 +6,12 @@ at the keyboard. Each run of `check-updates.sh`:
 1. downloads the published updates file (and stops if it cannot: starting from an empty list
    would erase the history);
 2. asks a headless agent for news from the last 24 hours, with `claude -p` restricted to
-   `WebSearch` and `WebFetch`, in an empty temporary folder;
+   `WebSearch` and `WebFetch` (`--tools`), without MCP servers or user settings, in an empty
+   temporary folder and a clean environment;
 3. validates every proposed item with `merge.py`: text in every language of the event, a short
-   source name, an `https` link on an allowlisted domain, no markup, reasonable length, not a
-   repeat. At most five new items per run; existing items are never changed or removed;
+   source name, a plain `https` link (no user, port or backslash) on an allowlisted domain, no
+   markup, reasonable length, not a repeat. At most five new items per run; existing items are never
+   changed or removed. Items from domains marked `review` go to `$STATE_DIR/pending.json` instead;
 4. publishes only that file with `publish.py`, which talks to the Firebase Hosting REST API
    directly (no Node, no gcloud): it clones the live version, replaces one path and releases.
 
@@ -33,6 +35,9 @@ rely on it obeying.
 
 1. Copy `watch.env.example` to a private place, fill it in, `chmod 600` it.
 2. Put the allowlist in `<data>/watch/allowed-domains.txt` (one domain per line; subdomains count).
+   Add `review` after a domain to hold its items for a person: publish official bodies directly and
+   send the press to review, since one manipulated article is enough to announce a false change.
+   To approve a pending item, add it to the live file and publish it as in "To undo a bad item".
    Optionally write `<data>/watch/prompt.md` in the event's language; otherwise `prompt.md` here
    is used. Placeholders: `{{EVENT}} {{CITY}} {{DATE}} {{TIMEZONE}} {{NOW}} {{ISO}} {{LANGS}}
    {{SOURCES}} {{DOMAINS}} {{CURRENT}} {{EXAMPLE}}`.
@@ -46,4 +51,4 @@ rely on it obeying.
 Logs: `journalctl --user -u event-closures-watch`; the agent's stderr goes to `$STATE_DIR/agent.err`.
 
 To undo a bad item: edit the live file (download it, remove the item, publish it with
-`publish.py --site <site> --token "$(gcloud auth print-access-token)" updates.json=/<path>`).
+`FIREBASE_ACCESS_TOKEN="$(gcloud auth print-access-token)" publish.py --site <site> updates.json=/<path>`).

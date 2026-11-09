@@ -11,13 +11,15 @@
 # 4. Publishes only that file with publish.py (Firebase Hosting REST API: clones the live version
 #    and replaces one path, so the rest of the site is untouched).
 #
-# The agent never sees credentials or the file system: it runs in an empty temp dir with no file
-# tools and its answer is treated as untrusted data.
+# The agent never sees credentials or the file system: it runs in an empty temp dir, with only
+# WebSearch and WebFetch, no MCP servers, no user settings and a clean environment, and its answer
+# is treated as untrusted data.
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 conf="${1:-${WATCH_ENV:-$here/watch.env}}"
 [[ -f "$conf" ]] || { echo "config not found: $conf (copy watch.env.example)"; exit 2; }
-set -a; . "$conf"; set +a
+# sourced without exporting: the agent below must not inherit any of these values
+. "$conf"
 : "${DATA_DIR:?DATA_DIR (the event data folder) is required}" "${FIREBASE_SITE:?FIREBASE_SITE is required}" "${CREDENTIALS:?CREDENTIALS is required}"
 ALLOWED_DOMAINS="${ALLOWED_DOMAINS:-$DATA_DIR/watch/allowed-domains.txt}"
 PROMPT_FILE="${PROMPT_FILE:-$( [[ -f "$DATA_DIR/watch/prompt.md" ]] && echo "$DATA_DIR/watch/prompt.md" || echo "$here/prompt.md")}"
@@ -34,6 +36,7 @@ PY
 )"
 SITE_URL="${SITE_URL:-$site_url}"
 [[ -n "$SITE_URL" ]] || { log "no SITE_URL and no event.site.url"; exit 2; }
+[[ "$updates_path" =~ ^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*\.json$ ]] || { log "refusing updates path: $updates_path"; exit 2; }
 url="${SITE_URL%/}/$updates_path"
 
 # Optional end of the watch: after STOP_AFTER ("2027-04-25 16:00") the timer disables itself.
@@ -69,9 +72,15 @@ PY
 )"
 log "asking the agent"
 work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
-( cd "$work" && timeout 900 "$CLAUDE_BIN" -p "$prompt" --allowedTools "WebSearch,WebFetch" > "$work/answer.txt" 2>>"$STATE_DIR/agent.err" ) || log "agent exited with $? (continuing with whatever it printed)"
+# --tools limits the agent to these two tools (allowedTools alone only skips the prompt for them);
+# --strict-mcp-config and --setting-sources "" keep the user's MCP servers and allow rules out;
+# env -i gives it a clean environment with no config values or credential paths.
+( cd "$work" && env -i HOME="$HOME" PATH="$PATH" LANG="${LANG:-C.UTF-8}" timeout 900 "$CLAUDE_BIN" -p "$prompt" \
+    --tools "WebSearch,WebFetch" --allowedTools "WebSearch,WebFetch" --strict-mcp-config --setting-sources "" \
+    > "$work/answer.txt" 2>>"$STATE_DIR/agent.err" ) || log "agent exited with $? (continuing with whatever it printed)"
 
-python3 "$here/merge.py" "$STATE_DIR/updates.json" "$work/answer.txt" "$now" "$STATE_DIR/new.json" --langs "$langs" --domains "$ALLOWED_DOMAINS"
+python3 "$here/merge.py" "$STATE_DIR/updates.json" "$work/answer.txt" "$now" "$STATE_DIR/new.json" --langs "$langs" --domains "$ALLOWED_DOMAINS" --pending "$STATE_DIR/pending.json"
+if [[ -s "$STATE_DIR/pending.json" && "$(cat "$STATE_DIR/pending.json")" != "[]" ]]; then log "items waiting for review in $STATE_DIR/pending.json"; fi
 
 if [[ "$(python3 -c 'import json,sys; print(len(json.load(open(sys.argv[1]))))' "$STATE_DIR/new.json")" == "0" ]]; then
   # nothing new: refresh the "last check" stamp at most once an hour
@@ -81,6 +90,6 @@ fi
 if [[ -n "${DRY_RUN:-}" ]]; then log "DRY_RUN: would publish $STATE_DIR/updates.json to /$updates_path on $FIREBASE_SITE"; exit 0; fi
 [[ -f "$CREDENTIALS" ]] || { log "no credentials at $CREDENTIALS, cannot publish"; exit 1; }
 case "$CREDENTIALS" in *adc*|*ADC*) cred=(--adc "$CREDENTIALS");; *) cred=(--key "$CREDENTIALS");; esac
-python3 "$here/publish.py" --site "$FIREBASE_SITE" "${cred[@]}" "$STATE_DIR/updates.json=/$updates_path"
+GOOGLE_CLOUD_QUOTA_PROJECT="${GOOGLE_CLOUD_QUOTA_PROJECT:-}" python3 "$here/publish.py" --site "$FIREBASE_SITE" "${cred[@]}" "$STATE_DIR/updates.json=/$updates_path"
 date +%s > "$STATE_DIR/last-publish"
 log "published $(python3 -c 'import json,sys; print(len(json.load(open(sys.argv[1]))["items"]))' "$STATE_DIR/updates.json") items"

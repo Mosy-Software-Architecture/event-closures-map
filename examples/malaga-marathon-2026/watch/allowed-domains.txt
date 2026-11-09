@@ -1,19 +1,20 @@
 # Domains whose links the watcher accepts (subdomains included). One per line.
+# "review" after a domain: its items wait in pending.json for a person instead of being published.
 malaga.eu
 emtmalaga.es
 emtsam.org
 ctmam.es
 puertomalaga.com
 generalimaratonmalaga.com
-diariosur.es
-laopiniondemalaga.es
-malagahoy.es
-101tv.es
-elespanol.com
-europapress.es
-efe.com
-rtve.es
-cadenaser.com
-cope.es
-ondacero.es
+diariosur.es review
+laopiniondemalaga.es review
+malagahoy.es review
+101tv.es review
+elespanol.com review
+europapress.es review
+efe.com review
+rtve.es review
+cadenaser.com review
+cope.es review
+ondacero.es review
 aemet.es

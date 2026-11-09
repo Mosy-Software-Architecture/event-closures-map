@@ -134,8 +134,9 @@ another Overpass instance.
 things to carry over are the response headers in `dist/firebase.json` (CSP, HSTS,
 X-Frame-Options...).
 
-**Firebase Hosting** is built in. Set `event.site.firebase` to `{ "site": "...", "project": "..." }`,
-sign in with `firebase login` or Application Default Credentials, and run `npm run deploy`.
+**Firebase Hosting** is built in. Set `event.site.firebase` to `{ "site": "...", "project": "..." }`
+(or the `FIREBASE_SITE` and `FIREBASE_PROJECT` environment variables), sign in with `firebase login`
+or Application Default Credentials, and run `npm run deploy`. It runs a pinned firebase-tools version.
 
 **Latest updates.** `updates.json` is usually rewritten by someone else while the event runs (a
 person, or the watcher below). A deploy replaces the whole site, so `npm run deploy` downloads the
@@ -156,11 +157,14 @@ file. See its [README](watch-updates/README.md).
 ## Security
 
 - No cookies, no analytics, no third-party scripts besides Leaflet (pinned version with SRI).
-- `script-src 'self' https://unpkg.com`: no inline scripts. Data is rendered with `textContent`;
-  the rich-text syntax is parsed into DOM nodes and only `https://` links survive.
+- No `unsafe-inline` anywhere in the CSP: scripts come from the site and the pinned Leaflet file only,
+  and the one inline style (brand colours) is allowed by its hash. Data is rendered with
+  `textContent`; the rich-text syntax is parsed into DOM nodes and only plain `https://` links survive
+  (no user info, ports or backslashes).
 - The build escapes everything it writes into the HTML; the tests check it.
-- The watcher's agent has no file or shell tools, its answer is treated as untrusted input, and the
-  credentials never reach it.
+- The watcher's agent only has web search and fetch (no MCP servers, no user settings, a clean
+  environment), its answer is treated as untrusted input, and the credentials never reach it. Items
+  from domains marked `review` wait for a person instead of being published.
 
 ## Contributing
 

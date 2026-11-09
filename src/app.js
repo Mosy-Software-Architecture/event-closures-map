@@ -55,7 +55,8 @@ function L10(v) {
   return String(v);
 }
 function safeUrl(u) {
-  try { const x = new URL(String(u), location.href); return (x.protocol === 'https:' || x.origin === location.origin) ? x.href : null; } catch (e) { return null; }
+  if (/[\\\s]/.test(String(u))) return null;
+  try { const x = new URL(String(u), location.href); if (x.username || x.password) return null; return (x.protocol === 'https:' || (/^https?:$/.test(x.protocol) && x.origin === location.origin)) ? x.href : null; } catch (e) { return null; }
 }
 // rich text: **bold** and [text](url) only
 function rich(text) {
@@ -278,7 +279,8 @@ function render() {
   $('slider').setAttribute('aria-label', T('sliderLabel'));
   // map attribution: OpenStreetMap is mandatory (ODbL); the map credit is the brand
   const ac = map.attributionControl; ac.setPrefix(false); for (const k in ac._attributions) ac.removeAttribution(k);
-  const credit = BRAND.mapCredit && safeUrl(BRAND.mapCredit.url) ? ` · ${T('mapBy')}: <a href="${safeUrl(BRAND.mapCredit.url).replace(/"/g, '&quot;')}">${String(BRAND.mapCredit.label || '').replace(/[<>&"]/g, '')}</a>` : '';
+  const h = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const credit = BRAND.mapCredit && safeUrl(BRAND.mapCredit.url) ? ` · ${h(T('mapBy'))}: <a href="${h(safeUrl(BRAND.mapCredit.url))}">${h(BRAND.mapCredit.label || '')}</a>` : '';
   ac.addAttribution('© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' + credit);
 
   // legend
@@ -379,7 +381,7 @@ function renderUpdates() {
   ul.replaceChildren();
   for (const it of [...UPDATES.items].sort((a, b) => String(b.time || '').localeCompare(String(a.time || '')))) {
     const txt = String(it[lang] || it[LANGS[0]] || it.es || it.en || '');
-    let href = null; try { const u = new URL(String(it.url || '')); if (u.protocol === 'https:') href = u.href; } catch (e) {}
+    const href = /^https:/i.test(String(it.url || '')) ? safeUrl(it.url) : null;
     ul.appendChild(el('li', null, el('span', { class: 'when' }, fmtWhen(it.time) + (it.source ? ` · ${String(it.source)}` : '')),
       href ? el('a', { href, target: '_blank', rel: 'noopener noreferrer' }, txt) : document.createTextNode(txt)));
   }

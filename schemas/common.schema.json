@@ -9,7 +9,7 @@
         { "type": "object", "propertyNames": { "pattern": "^[a-z]{2,3}(-[A-Za-z]{2,4})?$" }, "additionalProperties": { "type": "string" }, "minProperties": 1 }
       ]
     },
-    "httpsUrl": { "type": "string", "pattern": "^https://[^\\s]+$", "description": "Absolute https:// URL" },
+    "httpsUrl": { "type": "string", "pattern": "^https://[A-Za-z0-9.-]+([/?#][^\\s\\\\]*)?$", "description": "Absolute https:// URL, without user, port or backslashes" },
     "url": { "type": "string", "pattern": "^(https://[^\\s]+|[^:\\s]+)$", "description": "https:// URL or a path relative to the site root" },
     "color": { "type": "string", "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$" },
     "time": { "type": "string", "pattern": "^([01]?[0-9]|2[0-4]):[0-5][0-9]$", "description": "Local time of the event day, H:MM or HH:MM" },

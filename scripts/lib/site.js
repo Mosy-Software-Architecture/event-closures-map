@@ -166,9 +166,14 @@ function extraImgOrigins(branding) {
   }
   return [...out];
 }
+export const LEAFLET = 'https://unpkg.com/leaflet@1.9.4/dist/';
+const styleHash = css => `'sha256-${createHash('sha256').update(css).digest('base64')}'`;
 export function csp(data) {
-  const img = ["'self'", 'data:', 'https://*.tile.openstreetmap.org', 'https://unpkg.com', ...extraImgOrigins(data.branding)].join(' ');
-  return `default-src 'none'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src ${img}; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests`;
+  const img = ["'self'", 'data:', 'https://*.tile.openstreetmap.org', LEAFLET + 'images/', ...extraImgOrigins(data.branding)].join(' ');
+  // the only inline style element is the brand colours, allowed by its hash; style attributes are
+  // set from JavaScript (CSSOM), which the CSP does not restrict
+  const brand = styleHash(brandStyle(data.branding).replace(/</g, ''));
+  return `default-src 'none'; script-src 'self' ${LEAFLET}leaflet.js; style-src 'self' ${brand} ${LEAFLET}leaflet.css https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src ${img}; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests`;
 }
 export function securityHeaders(data) {
   return [

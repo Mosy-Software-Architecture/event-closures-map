@@ -136,8 +136,9 @@ permite usar otra instancia de Overpass.
 `npm run build` genera un sitio estático en `dist/public`. Vale cualquier hosting estático; lo
 único que hay que trasladar son las cabeceras de `dist/firebase.json` (CSP, HSTS, X-Frame-Options...).
 
-**Firebase Hosting** viene integrado. Pon `event.site.firebase` a `{ "site": "...", "project": "..." }`,
-inicia sesión con `firebase login` o con credenciales de aplicación (ADC) y ejecuta `npm run deploy`.
+**Firebase Hosting** viene integrado. Pon `event.site.firebase` a `{ "site": "...", "project": "..." }`
+(o las variables de entorno `FIREBASE_SITE` y `FIREBASE_PROJECT`), inicia sesión con `firebase login`
+o con credenciales de aplicación (ADC) y ejecuta `npm run deploy`. Usa una versión fija de firebase-tools.
 
 **Última hora.** Durante el evento, `updates.json` suele reescribirlo otro (una persona o el
 vigilante de abajo). Un despliegue sustituye el sitio entero, así que `npm run deploy` descarga
@@ -158,11 +159,14 @@ fichero de novedades. Ver su [README](watch-updates/README.md).
 ## Seguridad
 
 - Sin cookies, sin analítica y sin scripts de terceros salvo Leaflet (versión fija con SRI).
-- `script-src 'self' https://unpkg.com`: sin scripts en línea. Los datos se pintan con
-  `textContent`; el texto enriquecido se convierte en nodos y solo sobreviven los enlaces `https://`.
+- Sin `unsafe-inline` en la CSP: los scripts salen del propio sitio y del fichero fijo de Leaflet, y el
+  único estilo en línea (los colores de la marca) se permite por su hash. Los datos se pintan con
+  `textContent`; el texto enriquecido se convierte en nodos y solo sobreviven los enlaces `https://`
+  sencillos (sin usuario, puerto ni barras invertidas).
 - El build escapa todo lo que escribe en el HTML; las pruebas lo comprueban.
-- El agente del vigilante no tiene herramientas de ficheros ni de terminal, su respuesta se trata
-  como entrada no fiable y nunca ve las credenciales.
+- El agente del vigilante solo puede buscar y leer en la web (sin servidores MCP, sin la configuración
+  del usuario y con un entorno limpio), su respuesta se trata como entrada no fiable y nunca ve las
+  credenciales. Las novedades de dominios marcados con `review` esperan a una persona en vez de publicarse.
 
 ## Contribuir
 

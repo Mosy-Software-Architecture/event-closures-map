@@ -137,8 +137,7 @@
       "citation": "https://www.malaga.eu/visorcontenido/ANUDocumentDisplayer/180297/COMUNICADO.pdf"
     },
     "firebase": {
-      "site": "tomatic-maraton",
-      "project": "mosy-platform"
+      "site": "tomatic-maraton"
     }
   }
 }
