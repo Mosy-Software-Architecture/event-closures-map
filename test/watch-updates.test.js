@@ -1,15 +1,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT } from '../scripts/lib/data.js';
+import { tmp } from './helpers.js';
 
 const hasPython = spawnSync('python3', ['--version']).status === 0;
 
 function merge(published, answer, domains = '# comment\nmalaga.eu\nemtmalaga.es\n') {
-  const d = mkdtempSync(join(tmpdir(), 'ecm-watch-'));
+  const d = tmp('ecm-watch-');
   writeFileSync(join(d, 'p.json'), JSON.stringify(published));
   writeFileSync(join(d, 'a.txt'), answer);
   writeFileSync(join(d, 'domains.txt'), domains);

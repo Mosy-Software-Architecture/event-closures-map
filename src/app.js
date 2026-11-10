@@ -274,7 +274,10 @@ function render() {
   $('subtitle').textContent = L10(BRAND.subtitle);
   document.title = L10(EVENT.site && EVENT.site.title) || $('title').textContent;
   setRich($('notice'), fill(L10(EVENT.notice) || T('noticeDefault'), { url: primarySource.url }));
-  setRich($('noticeShort'), fill(L10(EVENT.noticeShort) || T('noticeShortDefault'), { url: primarySource.url }));
+  // the phone shows the short notice; without one, the full notice (never the generic text instead of the event's own)
+  const shortNotice = L10(EVENT.noticeShort) || (EVENT.notice ? '' : T('noticeShortDefault'));
+  $('noticewrap').classList.toggle('noshort', !shortNotice);
+  setRich($('noticeShort'), fill(shortNotice, { url: primarySource.url }));
   syncNoticeToggle();
   $('slider').setAttribute('aria-label', T('sliderLabel'));
   // map attribution: OpenStreetMap is mandatory (ODbL); the map credit is the brand
@@ -356,7 +359,8 @@ function syncNoticeToggle() { const open = $('noticewrap').classList.contains('o
 function scrollToMap() { if (mq.matches) $('mapwrap').scrollIntoView({ behavior: 'smooth' }); }
 function fitAll() {
   const all = layers.map(e => e.layer);
-  if (!all.length) { const m = EVENT.map || {}; map.setView(m.center || [40.4168, -3.7038], m.zoom || 13); return; }
+  const m = EVENT.map || {};
+  if (!all.length || m.fit === false) { map.setView(m.center || [40.4168, -3.7038], m.zoom || 13); return; }
   const pad = mq.matches ? ($('timecard').offsetHeight + 24) : 0;
   map.fitBounds(L.featureGroup(all).getBounds().pad(0.03), { paddingTopLeft: [8, 8], paddingBottomRight: [8, 8 + pad] });
 }
@@ -400,7 +404,9 @@ async function loadUpdates() {
 const slider = $('slider');
 slider.min = tStart; slider.max = tEnd; slider.step = tStep; slider.value = tStart;
 {
-  const ticks = []; const every = (tEnd - tStart) > 12 * 60 ? 120 : 60;
+  // at most about eight labels, so they never overlap on a phone
+  const span = tEnd - tStart, every = [30, 60, 120, 180, 240, 360].find(x => span / x <= 7) || 720;
+  const ticks = [];
   for (let m = Math.ceil(tStart / every) * every; m <= tEnd; m += every) ticks.push(el('span', null, fmt(m)));
   $('ticks').replaceChildren(...ticks);
 }
@@ -415,12 +421,25 @@ $('updatesToggle').addEventListener('click', () => { updatesOpen = !updatesOpen;
 mq.addEventListener('change', placeTimecard);
 window.addEventListener('resize', () => { setTopH(); map.invalidateSize(); });
 
+// ?t=10:30 sets the slider; ?view=lat,lon,zoom sets the map. Handy for links and screenshots.
+function setTime(hhmm) {
+  if (!/^\d{1,2}:\d{2}$/.test(hhmm || '')) return;
+  const m = Math.min(tEnd, Math.max(tStart, toMin(hhmm)));
+  slider.value = m; state.t = m; state.allDay = false; refresh();
+}
+function initialView() {
+  const v = (qs.get('view') || '').split(',').map(Number);
+  if (v.length === 3 && v.every(Number.isFinite)) map.setView([v[0], v[1]], v[2], { animate: false });
+  else fitAll();
+}
+
 placeTimecard();
 render();
 setTopH(); map.invalidateSize();
-fitAll();
+setTime(qs.get('t'));
+initialView();
 loadUpdates(); setInterval(loadUpdates, ((EVENT.updates && EVENT.updates.refreshMinutes) || 10) * 60 * 1000);
-window.addEventListener('load', () => { setTopH(); map.invalidateSize(); fitAll(); });
+window.addEventListener('load', () => { setTopH(); map.invalidateSize(); initialView(); });
 
 // ?og=1: the framing used for the social preview image (light theme, no notice, a fixed time)
 if (qs.get('og') === '1') {

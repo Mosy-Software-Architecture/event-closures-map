@@ -22,11 +22,11 @@
     "map": {
       "type": "object",
       "required": ["center", "zoom", "bbox"],
-      "properties": { "center": { "$ref": "common.schema.json#/$defs/latLon" }, "zoom": { "type": "number", "minimum": 1, "maximum": 19 }, "bbox": { "$ref": "common.schema.json#/$defs/bbox" } },
+      "properties": { "center": { "$ref": "common.schema.json#/$defs/latLon" }, "zoom": { "type": "number", "minimum": 1, "maximum": 19 }, "bbox": { "$ref": "common.schema.json#/$defs/bbox" }, "fit": { "type": "boolean", "description": "true (default): open fitted to all closed streets; false: open at center and zoom" } },
       "additionalProperties": false
     },
     "notice": { "$ref": "common.schema.json#/$defs/localized", "description": "Rich. {url} is replaced by the primary source URL." },
-    "noticeShort": { "$ref": "common.schema.json#/$defs/localized" },
+    "noticeShort": { "$ref": "common.schema.json#/$defs/localized", "description": "Shown on phones until the notice is expanded. Without it, phones show the full notice." },
     "info": {
       "type": "array",
       "items": {

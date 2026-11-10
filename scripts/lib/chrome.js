@@ -24,8 +24,12 @@ export async function launch() {
     await sleep(100);
     try { port = readFileSync(join(profile, 'DevToolsActivePort'), 'utf8').split('\n')[0]; } catch (e) {}
   }
-  if (!port) { proc.kill(); throw new Error('Chrome did not start'); }
-  const close = () => { proc.kill(); setTimeout(() => rmSync(profile, { recursive: true, force: true }), 500); };
+  if (!port) { proc.kill(); rmSync(profile, { recursive: true, force: true }); throw new Error('Chrome did not start'); }
+  // wait for Chrome to exit before removing its profile, so nothing is left in the temp folder
+  const close = async () => {
+    if (proc.exitCode === null) { const gone = new Promise(r => proc.once('exit', r)); proc.kill(); await Promise.race([gone, sleep(3000)]); }
+    rmSync(profile, { recursive: true, force: true, maxRetries: 3 });
+  };
   return { port, close };
 }
 
@@ -72,5 +76,5 @@ export async function inspect(url, { width = 1280, height = 800, scale = 1, mobi
     const shot = screenshot ? Buffer.from((await page.send('Page.captureScreenshot', { format: 'png' })).data, 'base64') : null;
     page.close();
     return { problems, stats, shot };
-  } finally { chrome.close(); }
+  } finally { await chrome.close(); }
 }

@@ -1,12 +1,12 @@
+import { tmp } from './helpers.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { serveDist } from '../scripts/lib/serve.js';
 
 test('the preview server survives bad encodings and stays inside public/', async () => {
-  const d = mkdtempSync(join(tmpdir(), 'ecm-serve-'));
+  const d = tmp('ecm-serve-');
   mkdirSync(join(d, 'public')); mkdirSync(join(d, 'public-x'));
   writeFileSync(join(d, 'public/index.html'), 'ok'); writeFileSync(join(d, 'public-x/secret.txt'), 'secret');
   writeFileSync(join(d, 'firebase.json'), JSON.stringify({ hosting: { headers: [] } }));

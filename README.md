@@ -49,7 +49,7 @@ JSON Schema in [`schemas/`](schemas); editors that understand `$schema` will aut
 
 | File | Required | What it holds |
 |---|---|---|
-| `event.json` | yes | Name, city, date, time zone, languages, slider window, map centre and bounding box, the notice, free-form info sections (race times, public transport...), SEO and deploy settings. |
+| `event.json` | yes | Name, city, date, time zone, languages, slider window, map area (`center`, `zoom`, `bbox`; the map opens fitted to the closed streets unless `"fit": false`), the notice (`notice`, and `noticeShort` for phones), free-form info sections (race times, public transport...), SEO and deploy settings. |
 | `branding.json` | yes | Organisation name, logo (light and dark), title, subtitle, colours, font, call to action, legal notice, footer credit. |
 | `closures.json` | no | Time slots (`bands`) and the closed streets, each with its slots, notes and GeoJSON geometry. |
 | `parking.json` | no | Parking bans (with or without geometry) and car parks with restricted access. |
@@ -96,7 +96,8 @@ slots lists both (`"bands": ["A", "G"]`); the second one is drawn dashed.
 | `npm run og` | Takes the 1200x630 social preview image from the page itself (needs Chrome). |
 | `npm run deploy` | Builds and publishes to Firebase Hosting, keeping the live updates file. |
 | `npm test` | Unit tests (schemas, validation, Overpass resolution with a recorded response, GPX, build, watcher). |
-| `npm run smoke` | Loads `dist/` in headless Chrome at desktop and phone sizes and fails on console errors, CSP violations or an empty map (needs Chrome; `CHROME_PATH` to point at it). |
+| `npm run smoke` | Loads `dist/` in headless Chrome at desktop and phone sizes, in the event's main language, and fails on console errors, CSP violations or an empty map (needs Chrome; `CHROME_PATH` to point at it). |
+| `npm run shot -- --time 10:30 --view 36.72,-4.42,16 --phone` | One screenshot at a given time, place and size, to check a slot or a neighbourhood. The page takes the same as `?t=10:30&view=lat,lon,zoom`. |
 
 Every script takes `--data <dir>`, or the `ECM_DATA` environment variable.
 
@@ -117,7 +118,8 @@ matches. By default the pattern is the exact name with accents optional; set `os
 ```
 
 - `match`: case-insensitive regular expression on the OSM name (POSIX syntax: Overpass runs it too).
-- `bbox`: narrows the search when the same name exists elsewhere in the area.
+- `bbox`: narrows the search when the same name exists elsewhere in the area, and cuts the ways
+  at its edge, so only the part of a long street inside it is drawn.
 - `ways`: explicit OSM way ids, for bridges without a name or pieces that do not share it.
 - `anyTag`: also ways without a `highway` tag (piers, breakwaters).
 - `includeFootways`: footways, steps and paths are skipped unless this is set.
@@ -125,7 +127,8 @@ matches. By default the pattern is the exact name with accents optional; set `os
 
 It writes the geometry and `osm.resolved` (the way ids used) back into the file. Responses are
 cached in `.cache/overpass/`; `--no-cache` asks again, `--force` refetches streets that already
-have geometry, `--only id,id` limits the run, `--dry-run` writes nothing. Set `OVERPASS_URL` to use
+have geometry, `--only id,id` limits the run, `--dry-run` writes nothing. Ambiguous streets are
+reported and left without geometry; `--accept-ambiguous` writes them anyway. Set `OVERPASS_URL` to use
 another Overpass instance.
 
 ## Deploying
