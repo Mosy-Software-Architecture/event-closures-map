@@ -20,7 +20,7 @@ async function page(dataDirPath, query, size) {
   await p.send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}/${query}` });
   for (let i = 0; i < 100; i++) { await sleep(100); if (await p.evaluate("document.documentElement.dataset.ready === '1'").catch(() => false)) break; }
   await sleep(500);
-  return { evaluate: p.evaluate, close: async () => { p.close(); await chrome.close(); server.close(); } };
+  return { evaluate: p.evaluate, close: async () => { server.close(); p.close(); await chrome.close(); } };
 }
 
 test('on a phone, an event notice without a short version is shown in full', { skip }, async () => {

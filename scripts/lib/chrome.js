@@ -18,17 +18,23 @@ export async function launch() {
   const bin = findChrome();
   if (!bin) throw new Error('Chrome not found; set CHROME_PATH');
   const profile = mkdtempSync(join(tmpdir(), 'ecm-chrome-'));
-  const proc = spawn(bin, ['--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`, '--no-first-run', '--no-default-browser-check', '--hide-scrollbars', 'about:blank'], { stdio: 'ignore' });
+  const proc = spawn(bin, ['--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`, '--no-first-run', '--no-default-browser-check', '--hide-scrollbars', 'about:blank'], { stdio: 'ignore', detached: process.platform !== 'win32' });
   let port;
   for (let i = 0; i < 100 && !port; i++) {
     await sleep(100);
     try { port = readFileSync(join(profile, 'DevToolsActivePort'), 'utf8').split('\n')[0]; } catch (e) {}
   }
-  if (!port) { proc.kill(); rmSync(profile, { recursive: true, force: true }); throw new Error('Chrome did not start'); }
+  if (!port) { try { process.kill(-proc.pid, 'SIGKILL'); } catch (e) { proc.kill(); } rmSync(profile, { recursive: true, force: true }); throw new Error('Chrome did not start'); }
   // wait for Chrome to exit before removing its profile, so nothing is left in the temp folder
+  // Chrome starts helper processes that keep writing to the profile after the main one exits, so
+  // the whole process group is stopped, and removing the profile is best effort: it never throws.
+  const killAll = sig => { try { process.kill(process.platform === 'win32' ? proc.pid : -proc.pid, sig); } catch (e) {} };
   const close = async () => {
-    if (proc.exitCode === null) { const gone = new Promise(r => proc.once('exit', r)); proc.kill(); await Promise.race([gone, sleep(3000)]); }
-    rmSync(profile, { recursive: true, force: true, maxRetries: 3 });
+    if (proc.exitCode === null) { const gone = new Promise(r => proc.once('exit', r)); killAll('SIGTERM'); await Promise.race([gone, sleep(3000)]); }
+    killAll('SIGKILL');
+    for (let i = 0; i < 10; i++) {
+      try { rmSync(profile, { recursive: true, force: true }); return; } catch (e) { await sleep(200); }
+    }
   };
   return { port, close };
 }
